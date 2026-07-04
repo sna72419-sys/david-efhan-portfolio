@@ -1,95 +1,322 @@
+"use client";
+
+import { useState } from "react";
+import { motion } from "framer-motion";
 import { profile } from "@/lib/data";
-import { Mail, Phone, MapPin } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Copy,
+  Check,
+  Send,
+  Rocket,
+  Code2,
+  Smartphone,
+  Handshake,
+} from "lucide-react";
 
 function GithubIcon({ size = 18, className = "" }: { size?: number; className?: string }) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      className={className}
-      aria-hidden="true"
-    >
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
       <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55 0-.27-.01-1.17-.02-2.12-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.78 1.19 1.78 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.8 1.19 1.83 1.19 3.08 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.08.78 2.17 0 1.57-.01 2.83-.01 3.22 0 .31.2.66.79.55A10.51 10.51 0 0 0 23.5 12c0-6.35-5.15-11.5-11.5-11.5Z" />
     </svg>
   );
 }
 
-export default function Contact() {
+const endpoints = [
+  { key: "email", label: "Email", value: profile.email, icon: Mail, href: `mailto:${profile.email}`, color: "#3B82F6" },
+  { key: "github", label: "GitHub", value: profile.github, icon: GithubIcon, href: profile.githubUrl, color: "#A855F7" },
+  { key: "phone", label: "Phone", value: profile.phone, icon: Phone, href: `tel:${profile.phone.replace(/\s+/g, "")}`, color: "#22C55E" },
+  { key: "location", label: "Location", value: profile.location, icon: MapPin, href: null, color: "#F59E0B" },
+];
+
+const availability = [
+  { icon: Rocket, title: "Open to Work", desc: "Actively seeking full-time roles", color: "#22C55E" },
+  { icon: Code2, title: "Full Stack Development", desc: "Web apps end to end", color: "#3B82F6" },
+  { icon: Smartphone, title: "Android Development", desc: "Native mobile apps", color: "#A855F7" },
+  { icon: Handshake, title: "Freelance & Collaboration", desc: "Open to short-term projects", color: "#F59E0B" },
+];
+
+function CardShell({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <section id="contact" className="py-16 sm:py-24 border-t border-border-dim">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-[140px_1fr] gap-3 sm:gap-8">
-          <div className="font-mono text-xs uppercase tracking-[0.2em] text-accent-amber">
+    <div
+      className={`rounded-[24px] p-[1px] ${className}`}
+      style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}
+    >
+      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+export default function Contact() {
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+
+  const handleCopy = async (key: string, value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 1800);
+    } catch {
+      // clipboard unavailable, ignore silently
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("sending");
+    const body = `From: ${form.name} (${form.email})%0D%0A%0D%0A${encodeURIComponent(form.message)}`;
+    const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(form.subject || "Portfolio contact")}&body=${body}`;
+    setTimeout(() => {
+      window.location.href = mailto;
+      setStatus("sent");
+      setTimeout(() => setStatus("idle"), 2500);
+    }, 700);
+  };
+
+  return (
+    <section
+      id="contact"
+      className="relative py-16 sm:py-28 border-t border-white/[0.08] overflow-hidden"
+      style={{ backgroundColor: "#080B14" }}
+    >
+      {/* ambient glow */}
+      <div className="absolute top-0 left-1/4 w-[380px] h-[380px] rounded-full blur-[130px] opacity-20 pointer-events-none" style={{ background: "#7C3AED" }} aria-hidden />
+      <div className="absolute bottom-0 right-0 w-[360px] h-[360px] rounded-full blur-[130px] opacity-20 pointer-events-none" style={{ background: "#3B82F6" }} aria-hidden />
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage: "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundSize: "40px 40px",
+        }}
+        aria-hidden
+      />
+      {/* floating code symbols */}
+      {["</>", "{ }", "=>", "#"].map((sym, i) => (
+        <span
+          key={sym}
+          className="absolute font-mono text-white/[0.05] text-4xl sm:text-5xl font-bold pointer-events-none float-badge select-none"
+          style={{
+            top: `${15 + i * 20}%`,
+            left: i % 2 === 0 ? "4%" : "auto",
+            right: i % 2 !== 0 ? "5%" : "auto",
+            animationDelay: `${i * 0.7}s`,
+          }}
+          aria-hidden
+        >
+          {sym}
+        </span>
+      ))}
+
+      <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
+        {/* header */}
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-14 sm:mb-20">
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#A855F7] mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#A855F7] shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
             // contact
-          </div>
-          <div>
-            <h2 className="text-2xl sm:text-3xl font-bold font-mono mb-3">
+          </span>
+          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
+            <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}>
               connect()
-            </h2>
-            <p className="text-muted mb-6 sm:mb-10 max-w-lg">
-              Open to full-stack web and Android development opportunities.
-              Send a message and I&apos;ll get back to you.
-            </p>
+            </span>
+            <motion.span
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="absolute left-0 -bottom-2 h-[3px] w-full origin-left rounded-full"
+              style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
+            />
+          </h2>
+          <p className="text-muted mt-5 max-w-lg text-sm sm:text-base">
+            Open to Full Stack Web and Android development opportunities.
+            Let&apos;s build something amazing together.
+          </p>
+        </motion.div>
 
-            <div className="grid sm:grid-cols-2 gap-4 max-w-2xl">
-              <a
-                href={`mailto:${profile.email}`}
-                className="flex items-center gap-3 p-4 rounded-lg border border-border-dim bg-surface hover:border-accent-cyan/50 transition-colors group"
-              >
-                <Mail
-                  size={18}
-                  className="text-accent-cyan shrink-0"
-                />
-                <div className="min-w-0">
-                  <p className="text-xs text-muted font-mono">email</p>
-                  <p className="text-sm font-mono truncate group-hover:text-accent-cyan transition-colors">
-                    {profile.email}
-                  </p>
+        {/* two cards */}
+        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-14">
+          {/* LEFT: Developer Endpoint */}
+          <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}>
+            <CardShell className="h-full">
+              <div className="p-6 sm:p-7 h-full flex flex-col">
+                <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
+                  Developer Endpoint
+                </h3>
+
+                <div className="space-y-3 flex-1">
+                  {endpoints.map((ep) => {
+                    const Icon = ep.icon;
+                    const isCopied = copiedKey === ep.key;
+                    return (
+                      <div
+                        key={ep.key}
+                        className="group relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-all hover:border-white/20"
+                        style={{ boxShadow: "0 0 0 rgba(0,0,0,0)" }}
+                      >
+                        <span
+                          className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105"
+                          style={{ backgroundColor: `${ep.color}1A` }}
+                        >
+                          <Icon size={17} style={{ color: ep.color }} />
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[10px] uppercase tracking-widest text-white/35 font-mono">{ep.label}</p>
+                          {ep.href ? (
+                            <a href={ep.href} target={ep.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-[13px] text-white/85 hover:text-white transition-colors truncate block">
+                              {ep.value}
+                            </a>
+                          ) : (
+                            <p className="text-[13px] text-white/85 truncate">{ep.value}</p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleCopy(ep.key, ep.value)}
+                          aria-label={`Copy ${ep.label}`}
+                          className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-colors"
+                        >
+                          {isCopied ? <Check size={14} className="text-[#22C55E]" /> : <Copy size={14} />}
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
-              </a>
 
-              <a
-                href={profile.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-4 rounded-lg border border-border-dim bg-surface hover:border-accent-cyan/50 transition-colors group"
-              >
-                <GithubIcon size={18} className="text-accent-cyan shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs text-muted font-mono">github</p>
-                  <p className="text-sm font-mono truncate group-hover:text-accent-cyan transition-colors">
-                    {profile.github}
-                  </p>
-                </div>
-              </a>
-
-              <a
-                href={`tel:${profile.phone.replace(/\s+/g, "")}`}
-                className="flex items-center gap-3 p-4 rounded-lg border border-border-dim bg-surface hover:border-accent-cyan/50 transition-colors group"
-              >
-                <Phone size={18} className="text-accent-cyan shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs text-muted font-mono">phone</p>
-                  <p className="text-sm font-mono truncate group-hover:text-accent-cyan transition-colors">
-                    {profile.phone}
-                  </p>
-                </div>
-              </a>
-
-              <div className="flex items-center gap-3 p-4 rounded-lg border border-border-dim bg-surface">
-                <MapPin size={18} className="text-accent-cyan shrink-0" />
-                <div className="min-w-0">
-                  <p className="text-xs text-muted font-mono">location</p>
-                  <p className="text-sm font-mono truncate">
-                    {profile.location}
-                  </p>
+                {/* status card */}
+                <div className="mt-5 rounded-xl border border-[#22C55E]/25 bg-[#22C55E]/[0.06] p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] uppercase tracking-widest text-white/40 font-mono">Status</span>
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#22C55E]">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-60" />
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#22C55E]" />
+                      </span>
+                      AVAILABLE
+                    </span>
+                  </div>
+                  <div className="space-y-1.5 text-[12px]">
+                    <div className="flex justify-between">
+                      <span className="text-white/45">Response Time</span>
+                      <span className="text-white/80">Within 24 Hours</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-white/45">Preferred Role</span>
+                      <span className="text-white/80">Full Stack Developer</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            </CardShell>
+          </motion.div>
+
+          {/* RIGHT: Message Terminal */}
+          <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}>
+            <CardShell className="h-full">
+              <form onSubmit={handleSubmit} className="h-full flex flex-col">
+                {/* terminal top bar */}
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.08]">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#F87171]/70" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24]/70" />
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#34D399]/70" />
+                  <span className="ml-2 text-xs font-mono text-white/40">connect.sh</span>
+                </div>
+
+                <div className="p-6 sm:p-7 flex-1 flex flex-col gap-4">
+                  <label className="block">
+                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ name</span>
+                    <input
+                      required
+                      type="text"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      placeholder="Juan Dela Cruz"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05]"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ email</span>
+                    <input
+                      required
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      placeholder="you@example.com"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05]"
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ subject</span>
+                    <input
+                      type="text"
+                      value={form.subject}
+                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                      placeholder="Job opportunity"
+                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05]"
+                    />
+                  </label>
+                  <label className="block flex-1 flex flex-col">
+                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ message</span>
+                    <textarea
+                      required
+                      value={form.message}
+                      onChange={(e) => setForm({ ...form, message: e.target.value })}
+                      placeholder="Tell me about the opportunity..."
+                      rows={4}
+                      className="w-full flex-1 rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05] resize-none"
+                    />
+                  </label>
+
+                  <button
+                    type="submit"
+                    disabled={status !== "idle"}
+                    className="mt-1 inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white transition-transform active:scale-[0.98] hover:brightness-110 disabled:opacity-70"
+                    style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
+                  >
+                    {status === "sending" ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                        Connecting...
+                      </>
+                    ) : status === "sent" ? (
+                      <>
+                        <Check size={16} /> Connection Sent
+                      </>
+                    ) : (
+                      <>
+                        Execute Connection <Send size={15} />
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </CardShell>
+          </motion.div>
         </div>
+
+        {/* bottom availability panel */}
+        <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {availability.map((a) => {
+            const Icon = a.icon;
+            return (
+              <div key={a.title} className="group rounded-2xl p-[1px] transition-all" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
+                <div className="relative rounded-[15px] p-5 h-full backdrop-blur-xl overflow-hidden" style={{ backgroundColor: "#101827" }}>
+                  <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500" style={{ background: a.color }} aria-hidden />
+                  <span className="relative inline-flex w-10 h-10 rounded-xl items-center justify-center mb-3" style={{ backgroundColor: `${a.color}1A` }}>
+                    <Icon size={18} style={{ color: a.color }} />
+                  </span>
+                  <h4 className="relative text-[13px] font-bold text-white mb-1">{a.title}</h4>
+                  <p className="relative text-[11.5px] text-white/45 leading-snug">{a.desc}</p>
+                </div>
+              </div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );
