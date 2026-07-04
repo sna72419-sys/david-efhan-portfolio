@@ -9,6 +9,8 @@
   --muted: #7C8494;
   --accent-cyan: #5EEAD4;
   --accent-amber: #F59E0B;
+  --hero-blue: #3B82F6;
+  --hero-purple: #8B5CF6;
 }
 
 @theme inline {
@@ -20,6 +22,8 @@
   --color-muted: var(--muted);
   --color-accent-cyan: var(--accent-cyan);
   --color-accent-amber: var(--accent-amber);
+  --color-hero-blue: var(--hero-blue);
+  --color-hero-purple: var(--hero-purple);
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
 }
@@ -52,6 +56,22 @@ body {
 @keyframes scanline {
   0% { transform: translateY(-100%); }
   100% { transform: translateY(100%); }
+}
+
+@keyframes float-badge {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+.float-badge {
+  animation: float-badge 4s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.spin-slow {
+  animation: spin-slow 40s linear infinite;
 }
 
 ::selection {
