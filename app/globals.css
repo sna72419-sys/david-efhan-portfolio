@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0B0E14;
+  --surface: #131720;
+  --surface-2: #1A1F2B;
+  --border-dim: #232838;
+  --foreground: #E4E7EC;
+  --muted: #7C8494;
+  --accent-cyan: #5EEAD4;
+  --accent-amber: #F59E0B;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border-dim: var(--border-dim);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-accent-cyan: var(--accent-cyan);
+  --color-accent-amber: var(--accent-amber);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* scanner-line ambient glow */
+.scan-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(94, 234, 212, 0.12), transparent 60%);
+}
+
+/* dashed receipt edge */
+.receipt-edge {
+  -webkit-mask-image: repeating-linear-gradient(90deg, black 0 6px, transparent 6px 12px);
+  mask-image: repeating-linear-gradient(90deg, black 0 6px, transparent 6px 12px);
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor-blink {
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+::selection {
+  background: var(--accent-cyan);
+  color: #0B0E14;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* visible focus ring for accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
