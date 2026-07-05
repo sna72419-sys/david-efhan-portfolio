@@ -10,6 +10,7 @@ import {
   Download,
   GitBranch,
   Smartphone,
+  Coffee,
   Quote,
   GraduationCap,
   Code2,
@@ -25,13 +26,22 @@ function GithubIcon({ size = 16, className = "" }: { size?: number; className?: 
   );
 }
 
-const floatingIcons = [
-  { label: "PHP", pos: "top-0 -left-4 sm:-left-8", color: "#8993BE", delay: 0 },
-  { label: "La", pos: "top-6 -right-2 sm:-right-6", color: "#FF2D20", delay: 0.4 },
-  { label: "N", pos: "bottom-20 -left-6 sm:-left-10", color: "#FFFFFF", delay: 0.8 },
-  { label: "Java", pos: "bottom-24 -right-4 sm:-right-8", color: "#F58219", delay: 1.2 },
-  { icon: Smartphone, pos: "-bottom-3 left-6", color: "#3DDC84", delay: 1.6 },
-  { icon: GitBranch, pos: "-bottom-3 right-8", color: "#F05032", delay: 2 },
+type FloatingIcon = {
+  type: "text" | "outline" | "icon";
+  label?: string;
+  color?: string;
+  icon?: typeof Coffee;
+  pos: string;
+  delay: number;
+};
+
+const floatingIcons: FloatingIcon[] = [
+  { type: "text", label: "PHP", color: "#8993BE", pos: "top-0 -left-4 sm:-left-8", delay: 0 },
+  { type: "text", label: "La", color: "#FF2D20", pos: "top-6 -right-2 sm:-right-6", delay: 0.4 },
+  { type: "outline", label: "N", pos: "bottom-20 -left-6 sm:-left-10", delay: 0.8 },
+  { type: "icon", icon: Coffee, color: "#F58219", pos: "bottom-24 -right-4 sm:-right-8", delay: 1.2 },
+  { type: "icon", icon: Smartphone, color: "#3DDC84", pos: "-bottom-3 left-6", delay: 1.6 },
+  { type: "icon", icon: GitBranch, color: "#F05032", pos: "-bottom-3 right-8", delay: 2 },
 ];
 
 const statusRows = [
@@ -173,32 +183,33 @@ export default function About() {
               </div>
 
               {/* floating tech icons */}
-              {floatingIcons.map((item, i) => {
-                const Icon = item.icon;
-                return (
+              {floatingIcons.map((item, i) => (
+                <div
+                  key={i}
+                  className={`absolute ${item.pos} float-badge`}
+                  style={{ animationDelay: `${item.delay}s` }}
+                >
                   <div
-                    key={i}
-                    className={`absolute ${item.pos} float-badge`}
-                    style={{ animationDelay: `${item.delay}s` }}
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg"
+                    style={{ backgroundColor: "rgba(16,24,39,0.9)" }}
                   >
-                    <div
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg"
-                      style={{ backgroundColor: "rgba(16,24,39,0.9)" }}
-                    >
-                      {Icon ? (
-                        <Icon size={16} style={{ color: item.color }} />
-                      ) : (
-                        <span
-                          className="text-[10px] font-bold font-mono"
-                          style={{ color: item.color }}
-                        >
-                          {item.label}
-                        </span>
-                      )}
-                    </div>
+                    {item.type === "icon" && item.icon ? (
+                      <item.icon size={17} style={{ color: item.color }} />
+                    ) : item.type === "outline" ? (
+                      <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white flex items-center justify-center text-[9px] font-bold text-white">
+                        {item.label}
+                      </span>
+                    ) : (
+                      <span
+                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-[8.5px] sm:text-[9px] font-bold text-white"
+                        style={{ backgroundColor: item.color }}
+                      >
+                        {item.label}
+                      </span>
+                    )}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
 
             {/* availability card */}
