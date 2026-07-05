@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Download } from "lucide-react";
+import { X, Download, Loader2 } from "lucide-react";
 
 export default function ResumeViewerModal({
   isOpen,
@@ -11,6 +11,11 @@ export default function ResumeViewerModal({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const renderedRef = useRef(false);
+
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -23,6 +28,71 @@ export default function ResumeViewerModal({
       document.body.style.overflow = "";
     };
   }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (!isOpen || renderedRef.current) return;
+    renderedRef.current = true;
+    setLoading(true);
+    setError(false);
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const pdfjsLib = await import("pdfjs-dist");
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+        const loadingTask = pdfjsLib.getDocument({ url: "/resume.pdf" });
+        const pdf = await loadingTask.promise;
+        if (cancelled || !containerRef.current) return;
+
+        containerRef.current.innerHTML = "";
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          const containerWidth = containerRef.current.clientWidth || 700;
+          const baseViewport = page.getViewport({ scale: 1 });
+          const scale = (containerWidth / baseViewport.width) * (window.devicePixelRatio > 1 ? 2 : 1.5);
+          const viewport = page.getViewport({ scale });
+
+          const canvas = document.createElement("canvas");
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          canvas.style.width = "100%";
+          canvas.style.height = "auto";
+          canvas.style.display = "block";
+          canvas.style.marginBottom = "12px";
+          canvas.style.borderRadius = "8px";
+          canvas.style.boxShadow = "0 4px 24px rgba(0,0,0,0.4)";
+
+          const context = canvas.getContext("2d");
+          if (!context) continue;
+
+          if (cancelled || !containerRef.current) return;
+          containerRef.current.appendChild(canvas);
+
+          await page.render({ canvasContext: context, viewport, canvas }).promise;
+        }
+
+        if (!cancelled) setLoading(false);
+      } catch (err) {
+        console.error("Failed to render resume PDF:", err);
+        if (!cancelled) {
+          setError(true);
+          setLoading(false);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
+
+  // allow re-render if modal is closed and reopened after an error
+  useEffect(() => {
+    if (!isOpen) renderedRef.current = false;
+  }, [isOpen]);
 
   return (
     <AnimatePresence>
@@ -73,12 +143,26 @@ export default function ResumeViewerModal({
             </div>
 
             {/* pdf viewer */}
-            <div className="flex-1 bg-[#1a1d24]">
-              <iframe
-                src="/resume.pdf#toolbar=0"
-                title="David N. Efhan — Resume"
-                className="w-full h-full border-0"
-              />
+            <div className="relative flex-1 overflow-y-auto p-3 sm:p-5" style={{ backgroundColor: "#1a1d24" }}>
+              {loading && !error && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/40">
+                  <Loader2 size={24} className="animate-spin" />
+                  <span className="text-xs font-mono">Loading resume...</span>
+                </div>
+              )}
+              {error && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/50 px-6 text-center">
+                  <span className="text-sm">Couldn&apos;t load the preview.</span>
+                  <a
+                    href="/resume.pdf"
+                    download
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-medium text-white border border-white/15 hover:border-white/30 transition-colors"
+                  >
+                    <Download size={13} /> Download instead
+                  </a>
+                </div>
+              )}
+              <div ref={containerRef} className="max-w-2xl mx-auto" />
             </div>
           </motion.div>
         </motion.div>
