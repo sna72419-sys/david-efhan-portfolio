@@ -1,9 +1,11 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { profile } from "@/lib/data";
 import { Download, ArrowRight, Mail, Phone, Atom, Zap } from "lucide-react";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 function GithubIcon({ size = 18, className = "" }: { size?: number; className?: string }) {
   return (
@@ -22,8 +24,53 @@ const techBadges = [
 ];
 
 export default function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const blobRef = useRef<HTMLDivElement>(null);
+  const photoRef = useRef<HTMLDivElement>(null);
+  const orbitRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.to(blobRef.current, {
+        yPercent: 22,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+      gsap.to(photoRef.current, {
+        yPercent: 10,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+      gsap.to(orbitRef.current, {
+        rotate: 30,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }, sectionRef);
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
+  }, []);
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-screen flex items-center overflow-hidden">
       {/* dotted grid backdrop */}
       <div
         className="absolute inset-0 opacity-[0.06]"
@@ -118,27 +165,31 @@ export default function Hero() {
             className="relative mx-auto w-full max-w-[420px] aspect-square"
           >
             {/* gradient blob */}
-            <div
-              className="absolute inset-[8%] rounded-full blur-2xl opacity-70"
-              style={{ backgroundImage: "linear-gradient(135deg, var(--hero-blue), var(--hero-purple))" }}
-              aria-hidden
-            />
-            <div
-              className="absolute inset-[8%] rounded-full opacity-90"
-              style={{ backgroundImage: "linear-gradient(135deg, var(--hero-blue), var(--hero-purple))" }}
-              aria-hidden
-            />
+            <div ref={blobRef}>
+              <div
+                className="absolute inset-[8%] rounded-full blur-2xl opacity-70"
+                style={{ backgroundImage: "linear-gradient(135deg, var(--hero-blue), var(--hero-purple))" }}
+                aria-hidden
+              />
+              <div
+                className="absolute inset-[8%] rounded-full opacity-90"
+                style={{ backgroundImage: "linear-gradient(135deg, var(--hero-blue), var(--hero-purple))" }}
+                aria-hidden
+              />
+            </div>
 
             {/* orbit rings */}
-            <div className="absolute inset-[-6%] rounded-full border border-border-dim/70 spin-slow" aria-hidden>
-              <span className="absolute -top-1 left-1/2 w-2 h-2 rounded-full bg-accent-cyan" />
-            </div>
-            <div className="absolute inset-[4%] rounded-full border border-border-dim/50" aria-hidden>
-              <span className="absolute top-1/4 -right-1 w-1.5 h-1.5 rounded-full bg-hero-purple" />
+            <div ref={orbitRef}>
+              <div className="absolute inset-[-6%] rounded-full border border-border-dim/70 spin-slow" aria-hidden>
+                <span className="absolute -top-1 left-1/2 w-2 h-2 rounded-full bg-accent-cyan" />
+              </div>
+              <div className="absolute inset-[4%] rounded-full border border-border-dim/50" aria-hidden>
+                <span className="absolute top-1/4 -right-1 w-1.5 h-1.5 rounded-full bg-hero-purple" />
+              </div>
             </div>
 
             {/* photo */}
-            <div className="absolute inset-0 flex items-end justify-center">
+            <div ref={photoRef} className="absolute inset-0 flex items-end justify-center">
               <div className="relative w-[85%] aspect-[5/6]">
                 <Image
                   src="/profile-float.png"

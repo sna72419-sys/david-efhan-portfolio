@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import NoiseOverlay from "@/components/NoiseOverlay";
 
 export const metadata: Metadata = {
   title: "David N. Efhan — Full-Stack Web & Android Developer",
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-[#0B0E14] text-[#E4E7EC]">
+        <NoiseOverlay />
         {children}
       </body>
     </html>

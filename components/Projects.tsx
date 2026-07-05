@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { projects } from "@/lib/data";
+import TiltCard from "@/components/TiltCard";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -126,11 +127,14 @@ export default function Projects() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: idx * 0.12 }}
                 whileHover={{ y: -6 }}
-                className="group relative rounded-[24px] p-[1px] transition-all duration-300"
-                style={{
-                  backgroundImage: `linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02) 40%, ${meta.glow} 120%)`,
-                }}
               >
+                <TiltCard
+                  intensity={5}
+                  className="group relative rounded-[24px] p-[1px] transition-all duration-300"
+                  style={{
+                    backgroundImage: `linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02) 40%, ${meta.glow} 120%)`,
+                  }}
+                >
                 <div
                   className="relative h-full rounded-[23px] p-6 flex flex-col overflow-hidden backdrop-blur-xl transition-shadow duration-300 group-hover:shadow-2xl"
                   style={{
@@ -248,6 +252,7 @@ export default function Projects() {
                     )}
                   </div>
                 </div>
+                </TiltCard>
               </motion.article>
             );
           })}
