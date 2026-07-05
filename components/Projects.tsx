@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { projects } from "@/lib/data";
 import TiltCard from "@/components/TiltCard";
 import {
-  ArrowRight,
   ArrowUpRight,
   ShoppingCart,
   ScanLine,
@@ -72,47 +71,33 @@ export default function Projects() {
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
         {/* header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-14 sm:mb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >            <h2 className="relative inline-block text-3xl sm:text-5xl font-bold tracking-tight">
-              <span
-                className="bg-clip-text text-transparent"
-                style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}
-              >
-                printed_receipts
-              </span>
-              <motion.span
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.3 }}
-                className="absolute left-0 -bottom-2 h-[3px] w-full origin-left rounded-full"
-                style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
-              />
-            </h2>
-            <p className="text-muted mt-5 max-w-md text-sm sm:text-base">
-              Selected work — printed like the systems they run.
-            </p>
-          </motion.div>
-
-          <motion.a
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            href="https://github.com/sna72419-sys"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md text-sm font-medium text-white/90 hover:border-[#A855F7]/50 hover:bg-white/[0.06] transition-all"
-          >
-            View All Projects
-            <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-          </motion.a>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-14 sm:mb-20"
+        >
+          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold tracking-tight">
+            <span
+              className="bg-clip-text text-transparent"
+              style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}
+            >
+              printed_receipts
+            </span>
+            <motion.span
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="absolute left-0 -bottom-2 h-[3px] w-full origin-left rounded-full"
+              style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
+            />
+          </h2>
+          <p className="text-muted mt-5 max-w-md text-sm sm:text-base">
+            Selected work — printed like the systems they run.
+          </p>
+        </motion.div>
 
         {/* cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
