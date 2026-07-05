@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { profile } from "@/lib/data";
-import { Menu, X, Sun, Moon } from "lucide-react";
-import { useTheme } from "@/components/ThemeProvider";
+import { Menu, X } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const links = [
   { href: "#about", label: "about" },
@@ -15,7 +15,6 @@ const links = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
-  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border-dim bg-background/80 backdrop-blur-md">
@@ -45,14 +44,7 @@ export default function Nav() {
         </ul>
 
         <div className="flex items-center gap-1.5 sm:gap-3">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            className="p-2 rounded-lg text-muted hover:text-accent-cyan hover:bg-surface transition-colors"
-          >
-            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
-          </button>
+          <ThemeToggle />
 
           {/* mobile menu button */}
           <button

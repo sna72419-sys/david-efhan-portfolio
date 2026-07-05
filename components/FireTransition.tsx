@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence, useMotionValue, animate } from "framer-motion";
+
+export type FireMode = "toDark" | "toLight";
 
 interface Ember {
   x: number;
@@ -10,205 +13,349 @@ interface Ember {
   life: number;
   maxLife: number;
   size: number;
-  hue: number;
+  color: string;
 }
 
-interface Blob {
-  yRatio: number;
-  seed: number;
-  speed1: number;
-  speed2: number;
-  baseRadius: number;
-}
+const PALETTES: Record<
+  FireMode,
+  {
+    curtainColor: string;
+    core: string;
+    mid: string;
+    outer: string;
+    glowSoft: string;
+    direction: "ltr" | "rtl";
+  }
+> = {
+  toDark: {
+    curtainColor: "#FFFFFF",
+    core: "#F0FBFF",
+    mid: "#7DD3FC",
+    outer: "#0EA5E9",
+    glowSoft: "#38BDF8",
+    direction: "rtl",
+  },
+  toLight: {
+    curtainColor: "#09090B",
+    core: "#FFF3D6",
+    mid: "#FFA500",
+    outer: "#FF4500",
+    glowSoft: "#FF8C00",
+    direction: "ltr",
+  },
+};
+
+let filterIdCounter = 0;
 
 export default function FireTransition({
-  trigger,
-  curtainColor,
-  onDone,
+  active,
+  mode,
+  onMidpoint,
+  onComplete,
 }: {
-  trigger: number;
-  curtainColor: string;
-  onDone: () => void;
+  active: boolean;
+  mode: FireMode;
+  onMidpoint: () => void;
+  onComplete: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [progress, setProgress] = useState(0);
-  const [active, setActive] = useState(false);
+  const maskRectRef = useRef<SVGRectElement>(null);
+  const progress = useMotionValue(0);
+  const [filterId] = useState(() => `fireNoise-${++filterIdCounter}`);
+  const [maskId] = useState(() => `fireMask-${filterIdCounter}`);
+  const palette = PALETTES[mode];
 
   useEffect(() => {
-    if (trigger === 0) return;
+    if (!active) return;
 
-    let prefersReducedMotion = false;
+    let reduced = false;
     try {
-      prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     } catch {
-      // ignore
-    }
-    if (prefersReducedMotion) {
-      onDone();
-      return;
+      /* ignore */
     }
 
-    setActive(true);
-    setProgress(0);
+    if (reduced) {
+      onMidpoint();
+      const t = setTimeout(onComplete, 100);
+      return () => clearTimeout(t);
+    }
 
-    const duration = 1750;
-    const start = performance.now();
-    let raf: number;
+    const duration = 1.35;
     const embers: Ember[] = [];
     const canvas = canvasRef.current;
     const ctx = canvas ? canvas.getContext("2d") : null;
-
     if (canvas) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
-    const height = canvas ? canvas.height : 800;
-    const BLOB_COUNT = 22;
-    const blobs: Blob[] = Array.from({ length: BLOB_COUNT }, (_, i) => ({
-      yRatio: i / (BLOB_COUNT - 1),
-      seed: Math.random() * 1000,
-      speed1: 0.0035 + Math.random() * 0.003,
-      speed2: 0.007 + Math.random() * 0.004,
-      baseRadius: 45 + Math.random() * 45,
-    }));
+    let raf: number;
+    let running = true;
+    let midpointFired = false;
 
-    function spawnEmbers(edgeX: number, h: number, count: number) {
+    function coverageOf(v: number) {
+      return v <= 0.5 ? v * 2 : (1 - v) * 2;
+    }
+
+    function spawn(edgeX: number, h: number, count: number) {
       for (let i = 0; i < count; i++) {
         embers.push({
-          x: edgeX + (Math.random() - 0.5) * 60,
+          x: edgeX + (Math.random() - 0.5) * 70,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 1.2,
-          vy: -Math.random() * 2.2 - 0.6,
+          vx: (Math.random() - 0.5) * 1,
+          vy: -Math.random() * 2.4 - 0.5,
           life: 0,
-          maxLife: 40 + Math.random() * 55,
+          maxLife: 45 + Math.random() * 60,
           size: 1.2 + Math.random() * 3,
-          hue: 15 + Math.random() * 35,
+          color: Math.random() > 0.5 ? palette.mid : palette.core,
         });
       }
     }
 
-    function drawFlames(edgeX: number, h: number, elapsed: number, intensity: number) {
-      if (!ctx) return;
-      ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-
-      for (let i = 0; i < blobs.length; i++) {
-        const b = blobs[i];
-        const y = b.yRatio * h;
-        const wobble =
-          Math.sin(elapsed * b.speed1 + b.seed) * 0.5 +
-          Math.sin(elapsed * b.speed2 + b.seed * 1.7) * 0.5;
-        const radius = Math.max(8, b.baseRadius * intensity * (0.7 + wobble * 0.4));
-        const x = edgeX + wobble * 22;
-
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        grad.addColorStop(0, "rgba(255, 247, 214, 0.95)");
-        grad.addColorStop(0.28, "rgba(253, 224, 71, 0.85)");
-        grad.addColorStop(0.55, "rgba(251, 146, 60, 0.7)");
-        grad.addColorStop(0.8, "rgba(239, 68, 68, 0.45)");
-        grad.addColorStop(1, "rgba(239, 68, 68, 0)");
-
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    function tick(now: number) {
+    function draw() {
       try {
-        const elapsed = now - start;
-        const t = Math.min(elapsed / duration, 1);
-        const eased = 1 - Math.pow(1 - t, 2.4);
-        setProgress(eased);
+        if (!ctx || !canvas || !running) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        const fadeIn = Math.min(t / 0.08, 1);
-        const fadeOut = t > 0.75 ? Math.max(1 - (t - 0.75) / 0.25, 0) : 1;
-        const intensity = Math.max(fadeIn * fadeOut, 0.12);
+        const v = progress.get();
+        const coverage = coverageOf(v);
+        const edgeX =
+          palette.direction === "ltr"
+            ? coverage * canvas.width
+            : canvas.width - coverage * canvas.width;
 
-        if (ctx && canvas) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-          const edgeX = eased * (canvas.width + 260) - 130;
+        if (coverage > 0.02) spawn(edgeX, canvas.height, 3);
 
-          if (t < 0.97) {
-            drawFlames(edgeX, canvas.height, elapsed, intensity);
-            spawnEmbers(edgeX, canvas.height, Math.round(5 * intensity) + 1);
+        for (let i = embers.length - 1; i >= 0; i--) {
+          const e = embers[i];
+          e.life++;
+          e.x += e.vx;
+          e.y += e.vy;
+          e.vy -= 0.004;
+          const lr = e.life / e.maxLife;
+          if (lr >= 1) {
+            embers.splice(i, 1);
+            continue;
           }
-
-          for (let i = embers.length - 1; i >= 0; i--) {
-            const p = embers[i];
-            p.life++;
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy -= 0.005;
-            const lifeRatio = p.life / p.maxLife;
-            if (lifeRatio >= 1) {
-              embers.splice(i, 1);
-              continue;
-            }
-            const alpha = 1 - lifeRatio;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, Math.max(p.size * (1 - lifeRatio * 0.6), 0.4), 0, Math.PI * 2);
-            ctx.fillStyle = `hsla(${p.hue}, 100%, ${55 + lifeRatio * 25}%, ${alpha})`;
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = `hsla(${p.hue}, 100%, 60%, ${alpha})`;
-            ctx.fill();
-          }
-          ctx.shadowBlur = 0;
+          const alpha = 1 - lr;
+          ctx.beginPath();
+          ctx.arc(e.x, e.y, Math.max(e.size * (1 - lr * 0.5), 0.4), 0, Math.PI * 2);
+          ctx.fillStyle = e.color;
+          ctx.globalAlpha = alpha;
+          ctx.shadowBlur = 12;
+          ctx.shadowColor = e.color;
+          ctx.fill();
         }
-
-        if (t < 1) {
-          raf = requestAnimationFrame(tick);
-        } else {
-          setTimeout(() => {
-            setActive(false);
-            onDone();
-          }, 300);
-        }
+        ctx.globalAlpha = 1;
+        ctx.shadowBlur = 0;
       } catch (err) {
-        // Never let a drawing error silently kill the transition —
-        // fail safe by finishing immediately.
-        console.error("FireTransition render error:", err);
-        setActive(false);
-        onDone();
+        console.error("FireTransition canvas error:", err);
       }
+      if (running) raf = requestAnimationFrame(draw);
     }
 
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    progress.set(0);
+    raf = requestAnimationFrame(draw);
+
+    const controls = animate(progress, 1, {
+      duration,
+      ease: [0.4, 0, 0.2, 1],
+      onUpdate: (v) => {
+        if (!midpointFired && v >= 0.5) {
+          midpointFired = true;
+          onMidpoint();
+        }
+      },
+      onComplete: () => {
+        setTimeout(() => {
+          running = false;
+          cancelAnimationFrame(raf);
+          onComplete();
+        }, 300);
+      },
+    });
+
+    return () => {
+      running = false;
+      cancelAnimationFrame(raf);
+      controls.stop();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger]);
-
-  if (!active) return null;
-
-  const edgePercent = progress * 100;
+  }, [active, mode]);
 
   return (
-    <div className="fixed inset-0 z-[200] pointer-events-none overflow-hidden">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundColor: curtainColor,
-          clipPath: `polygon(${edgePercent}% 0%, 100% 0%, 100% 100%, ${Math.max(
-            edgePercent - 8,
-            0
-          )}% 100%)`,
-        }}
-      />
+    <AnimatePresence>
+      {active && (
+        <motion.div
+          initial={{ opacity: 1 }}
+          exit={{ opacity: 0, transition: { duration: 0.3 } }}
+          className="fixed inset-0 z-[200] pointer-events-none overflow-hidden"
+          style={{ backdropFilter: "blur(0px)" }}
+        >
+          {/* SVG turbulence filter + mask defining the organic flame edge */}
+          <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden>
+            <defs>
+              <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.012 0.035"
+                  numOctaves="3"
+                  seed="7"
+                  result="noise"
+                >
+                  <animate
+                    attributeName="baseFrequency"
+                    dur="2.5s"
+                    values="0.012 0.035;0.017 0.045;0.012 0.035"
+                    repeatCount="indefinite"
+                  />
+                </feTurbulence>
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="noise"
+                  scale="70"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
+                />
+              </filter>
+              <mask id={maskId} maskUnits="objectBoundingBox">
+                <MaskRect
+                  progress={progress}
+                  direction={palette.direction}
+                  filterId={filterId}
+                  rectRef={maskRectRef}
+                />
+              </mask>
+            </defs>
+          </svg>
 
-      <div
-        className="absolute top-0 bottom-0 w-64 blur-3xl"
-        style={{
-          left: `calc(${edgePercent}% - 128px)`,
-          backgroundImage:
-            "linear-gradient(90deg, transparent, #FDE047 30%, #FB923C 55%, #EF4444 80%, transparent)",
-          opacity: 0.45,
-        }}
-      />
+          {/* curtain of the old theme, revealed via the turbulent SVG mask */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundColor: palette.curtainColor,
+              WebkitMaskImage: `url(#${maskId})`,
+              maskImage: `url(#${maskId})`,
+              WebkitMaskRepeat: "no-repeat",
+              maskRepeat: "no-repeat",
+            }}
+          />
 
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-    </div>
+          {/* glow following the flame edge */}
+          <GlowEdge progress={progress} direction={palette.direction} palette={palette} />
+
+          {/* heat-shimmer blur band */}
+          <HeatBand progress={progress} direction={palette.direction} />
+
+          <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+function MaskRect({
+  progress,
+  direction,
+  filterId,
+  rectRef,
+}: {
+  progress: ReturnType<typeof useMotionValue<number>>;
+  direction: "ltr" | "rtl";
+  filterId: string;
+  rectRef: React.RefObject<SVGRectElement | null>;
+}) {
+  useEffect(() => {
+    const unsub = progress.on("change", (v) => {
+      const rect = rectRef.current;
+      if (!rect) return;
+      const coverage = v <= 0.5 ? v * 2 : (1 - v) * 2;
+      const widthPct = coverage * 130 - 15;
+      if (direction === "ltr") {
+        rect.setAttribute("x", "-15%");
+        rect.setAttribute("width", `${Math.max(widthPct, 0)}%`);
+      } else {
+        rect.setAttribute("x", `${100 - Math.max(widthPct, 0) + 15}%`);
+        rect.setAttribute("width", `${Math.max(widthPct, 0)}%`);
+      }
+    });
+    return unsub;
+  }, [progress, direction, rectRef]);
+
+  return (
+    <rect
+      ref={rectRef}
+      x={direction === "ltr" ? "-15%" : "115%"}
+      y="-15%"
+      width="0%"
+      height="130%"
+      fill="white"
+      filter={`url(#${filterId})`}
+    />
+  );
+}
+
+function GlowEdge({
+  progress,
+  direction,
+  palette,
+}: {
+  progress: ReturnType<typeof useMotionValue<number>>;
+  direction: "ltr" | "rtl";
+  palette: (typeof PALETTES)[FireMode];
+}) {
+  const left = useMotionValue("0%");
+
+  useEffect(() => {
+    const unsub = progress.on("change", (v) => {
+      const coverage = v <= 0.5 ? v * 2 : (1 - v) * 2;
+      const pct = direction === "ltr" ? coverage * 100 : 100 - coverage * 100;
+      left.set(`calc(${pct}% - 110px)`);
+    });
+    return unsub;
+  }, [progress, direction, left]);
+
+  return (
+    <motion.div
+      className="absolute top-0 bottom-0 w-56 blur-3xl"
+      style={{
+        left,
+        backgroundImage: `linear-gradient(90deg, transparent, ${palette.core} 25%, ${palette.mid} 50%, ${palette.outer} 75%, transparent)`,
+        opacity: 0.55,
+        mixBlendMode: "screen",
+      }}
+    />
+  );
+}
+
+function HeatBand({
+  progress,
+  direction,
+}: {
+  progress: ReturnType<typeof useMotionValue<number>>;
+  direction: "ltr" | "rtl";
+}) {
+  const left = useMotionValue("0%");
+
+  useEffect(() => {
+    const unsub = progress.on("change", (v) => {
+      const coverage = v <= 0.5 ? v * 2 : (1 - v) * 2;
+      const pct = direction === "ltr" ? coverage * 100 : 100 - coverage * 100;
+      left.set(`calc(${pct}% - 40px)`);
+    });
+    return unsub;
+  }, [progress, direction, left]);
+
+  return (
+    <motion.div
+      className="absolute top-0 bottom-0 w-20"
+      style={{
+        left,
+        backdropFilter: "blur(3px)",
+        WebkitBackdropFilter: "blur(3px)",
+        opacity: 0.6,
+      }}
+    />
   );
 }

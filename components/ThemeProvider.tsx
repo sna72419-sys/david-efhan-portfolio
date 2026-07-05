@@ -1,28 +1,26 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import FireTransition from "@/components/FireTransition";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import FireTransition, { FireMode } from "@/components/FireTransition";
 
 type Theme = "dark" | "light";
-
-const THEME_BG: Record<Theme, string> = {
-  dark: "#080B14",
-  light: "#F7F8FA",
-};
 
 const ThemeContext = createContext<{
   theme: Theme;
   toggleTheme: () => void;
+  isTransitioning: boolean;
 }>({
   theme: "dark",
   toggleTheme: () => {},
+  isTransitioning: false,
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
-  const [fireTrigger, setFireTrigger] = useState(0);
-  const [curtainColor, setCurtainColor] = useState(THEME_BG.dark);
+  const [fireActive, setFireActive] = useState(false);
+  const [fireMode, setFireMode] = useState<FireMode>("toDark");
+  const pendingTheme = useRef<Theme | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme") as Theme | null;
@@ -42,17 +40,34 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme, mounted]);
 
   const toggleTheme = () => {
-    const from = theme;
-    const to: Theme = from === "dark" ? "light" : "dark";
-    setCurtainColor(THEME_BG[from]);
-    setTheme(to);
-    setFireTrigger((n) => n + 1);
+    if (fireActive) return; // prevent multiple clicks / overlapping transitions
+    const to: Theme = theme === "dark" ? "light" : "dark";
+    pendingTheme.current = to;
+    setFireMode(to === "dark" ? "toDark" : "toLight");
+    setFireActive(true);
+  };
+
+  // Apply the actual theme change only once the flames fully cover the screen.
+  const handleMidpoint = () => {
+    if (pendingTheme.current) {
+      setTheme(pendingTheme.current);
+      pendingTheme.current = null;
+    }
+  };
+
+  const handleComplete = () => {
+    setFireActive(false);
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, isTransitioning: fireActive }}>
       {children}
-      <FireTransition trigger={fireTrigger} curtainColor={curtainColor} onDone={() => {}} />
+      <FireTransition
+        active={fireActive}
+        mode={fireMode}
+        onMidpoint={handleMidpoint}
+        onComplete={handleComplete}
+      />
     </ThemeContext.Provider>
   );
 }
