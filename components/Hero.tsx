@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { profile } from "@/lib/data";
 import { Download, ArrowRight, Mail, Phone, Atom, Zap, Eye } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import ResumeViewerModal from "@/components/ResumeViewerModal";
 
 function GithubIcon({ size = 18, className = "" }: { size?: number; className?: string }) {
   return (
@@ -24,6 +25,7 @@ const techBadges = [
 ];
 
 export default function Hero() {
+  const [resumeOpen, setResumeOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
   const blobRef = useRef<HTMLDivElement>(null);
   const photoRef = useRef<HTMLDivElement>(null);
@@ -121,14 +123,13 @@ export default function Hero() {
               >
                 View My Work <ArrowRight size={16} />
               </a>
-              <a
-                href="/resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                type="button"
+                onClick={() => setResumeOpen(true)}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-border-dim text-foreground font-semibold text-sm hover:border-accent-cyan hover:text-accent-cyan transition"
               >
                 View Resume <Eye size={16} />
-              </a>
+              </button>
               <a
                 href="/resume.pdf"
                 download
@@ -251,6 +252,8 @@ export default function Hero() {
           </motion.div>
         </div>
       </div>
+
+      <ResumeViewerModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </section>
   );
 }

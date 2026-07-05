@@ -17,6 +17,7 @@ import {
   Server,
   Crown,
 } from "lucide-react";
+import ResumeViewerModal from "@/components/ResumeViewerModal";
 
 function GithubIcon({ size = 16, className = "" }: { size?: number; className?: string }) {
   return (
@@ -85,6 +86,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export default function About() {
+  const [resumeOpen, setResumeOpen] = useState(false);
   return (
     <section
       id="about"
@@ -244,14 +246,13 @@ export default function About() {
                 </div>
 
                 <div className="mt-5 flex gap-2">
-                  <a
-                    href="/resume.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => setResumeOpen(true)}
                     className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-[13px] text-white/85 border border-white/15 transition-all hover:border-white/30 hover:bg-white/[0.04]"
                   >
                     View <Eye size={13} />
-                  </a>
+                  </button>
                   <a
                     href="/resume.pdf"
                     download
@@ -396,6 +397,8 @@ export default function About() {
           ))}
         </motion.div>
       </div>
+
+      <ResumeViewerModal isOpen={resumeOpen} onClose={() => setResumeOpen(false)} />
     </section>
   );
 }
