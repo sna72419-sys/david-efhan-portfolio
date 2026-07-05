@@ -40,7 +40,7 @@ export default function ResumeViewerModal({
     (async () => {
       try {
         const pdfjsLib = await import("pdfjs-dist");
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
         const loadingTask = pdfjsLib.getDocument({ url: "/resume.pdf" });
         const pdf = await loadingTask.promise;
