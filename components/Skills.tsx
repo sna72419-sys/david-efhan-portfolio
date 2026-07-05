@@ -369,7 +369,7 @@ export default function Skills() {
                         className="absolute -translate-x-1/2 -translate-y-1/2 float-badge"
                         style={{ left: `${left}%`, top: `${top}%`, animationDelay: `${i * 0.3}s` }}
                       >
-                        <div className="px-2 py-1 rounded-full text-[9px] font-mono font-medium text-foreground/85 border border-foreground/15 whitespace-nowrap backdrop-blur-md shadow" style={{ backgroundColor: "rgba(16,24,39,0.9)" }}>
+                        <div className="px-2 py-1 rounded-full text-[9px] font-mono font-medium text-foreground/85 border border-foreground/15 whitespace-nowrap backdrop-blur-md shadow" style={{ backgroundColor: "var(--surface)" }}>
                           {node}
                         </div>
                       </motion.div>
