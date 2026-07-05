@@ -8,9 +8,8 @@ import {
   MapPin,
   Mail,
   Download,
-  GitBranch,
-  Smartphone,
-  Coffee,
+  Atom,
+  Zap,
   Quote,
   GraduationCap,
   Code2,
@@ -26,22 +25,12 @@ function GithubIcon({ size = 16, className = "" }: { size?: number; className?: 
   );
 }
 
-type FloatingIcon = {
-  type: "text" | "outline" | "icon";
-  label?: string;
-  color?: string;
-  icon?: typeof Coffee;
-  pos: string;
-  delay: number;
-};
-
-const floatingIcons: FloatingIcon[] = [
-  { type: "text", label: "PHP", color: "#8993BE", pos: "top-0 -left-4 sm:-left-8", delay: 0 },
-  { type: "text", label: "La", color: "#FF2D20", pos: "top-6 -right-2 sm:-right-6", delay: 0.4 },
-  { type: "outline", label: "N", pos: "bottom-20 -left-6 sm:-left-10", delay: 0.8 },
-  { type: "icon", icon: Coffee, color: "#F58219", pos: "bottom-24 -right-4 sm:-right-8", delay: 1.2 },
-  { type: "icon", icon: Smartphone, color: "#3DDC84", pos: "-bottom-3 left-6", delay: 1.6 },
-  { type: "icon", icon: GitBranch, color: "#F05032", pos: "-bottom-3 right-8", delay: 2 },
+const techBadges = [
+  { label: "Laravel", color: "#FF2D20", position: "top-0 left-0 sm:left-4", delay: 0 },
+  { label: "Next.js", color: "#FFFFFF", position: "top-4 right-0 sm:right-1", delay: 0.5 },
+  { label: "React", color: "#61DAFB", position: "bottom-16 -left-2 sm:left-0", icon: Atom, delay: 1 },
+  { label: "TypeScript", color: "#3178C6", position: "bottom-6 right-0 sm:-right-1", delay: 1.5 },
+  { label: "Supabase", color: "#3ECF8E", position: "-bottom-3 left-1/3", icon: Zap, delay: 2 },
 ];
 
 const statusRows = [
@@ -182,34 +171,44 @@ export default function About() {
                 </div>
               </div>
 
-              {/* floating tech icons */}
-              {floatingIcons.map((item, i) => (
-                <div
-                  key={i}
-                  className={`absolute ${item.pos} float-badge`}
-                  style={{ animationDelay: `${item.delay}s` }}
-                >
+              {/* floating tech badges */}
+              {techBadges.map((badge) => {
+                const Icon = badge.icon;
+                return (
                   <div
-                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md shadow-lg"
-                    style={{ backgroundColor: "rgba(16,24,39,0.9)" }}
+                    key={badge.label}
+                    className={`absolute ${badge.position} float-badge`}
+                    style={{ animationDelay: `${badge.delay}s` }}
                   >
-                    {item.type === "icon" && item.icon ? (
-                      <item.icon size={17} style={{ color: item.color }} />
-                    ) : item.type === "outline" ? (
-                      <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 border-white flex items-center justify-center text-[9px] font-bold text-white">
-                        {item.label}
+                    <div className="flex flex-col items-center gap-1.5 px-2.5 py-2 rounded-xl border border-border-dim bg-surface/90 backdrop-blur-sm shadow-lg">
+                      {Icon ? (
+                        <Icon size={18} style={{ color: badge.color }} />
+                      ) : badge.label === "Next.js" ? (
+                        <span className="w-5 h-5 rounded-full border border-foreground flex items-center justify-center text-[10px] font-bold">
+                          N
+                        </span>
+                      ) : badge.label === "TypeScript" ? (
+                        <span
+                          className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-bold text-white"
+                          style={{ backgroundColor: badge.color }}
+                        >
+                          TS
+                        </span>
+                      ) : (
+                        <span
+                          className="w-5 h-5 rounded flex items-center justify-center text-[9px] font-bold text-white"
+                          style={{ backgroundColor: badge.color }}
+                        >
+                          La
+                        </span>
+                      )}
+                      <span className="text-[9px] font-mono text-muted whitespace-nowrap">
+                        {badge.label}
                       </span>
-                    ) : (
-                      <span
-                        className="w-5 h-5 sm:w-6 sm:h-6 rounded-md flex items-center justify-center text-[8.5px] sm:text-[9px] font-bold text-white"
-                        style={{ backgroundColor: item.color }}
-                      >
-                        {item.label}
-                      </span>
-                    )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* availability card */}
