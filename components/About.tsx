@@ -8,6 +8,7 @@ import {
   MapPin,
   Mail,
   Download,
+  Eye,
   Atom,
   Zap,
   Quote,
@@ -242,14 +243,24 @@ export default function About() {
                   </a>
                 </div>
 
-                <a
-                  href="/resume.pdf"
-                  download
-                  className="mt-5 inline-flex items-center justify-center gap-2 w-full py-2.5 rounded-lg font-semibold text-sm text-white transition-transform active:scale-[0.98] hover:brightness-110"
-                  style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
-                >
-                  Download Resume <Download size={14} />
-                </a>
+                <div className="mt-5 flex gap-2">
+                  <a
+                    href="/resume.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-[13px] text-white/85 border border-white/15 transition-all hover:border-white/30 hover:bg-white/[0.04]"
+                  >
+                    View <Eye size={13} />
+                  </a>
+                  <a
+                    href="/resume.pdf"
+                    download
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-[13px] text-white transition-transform active:scale-[0.98] hover:brightness-110"
+                    style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
+                  >
+                    Download <Download size={13} />
+                  </a>
+                </div>
               </div>
             </div>
           </motion.div>

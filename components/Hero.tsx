@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { profile } from "@/lib/data";
-import { Download, ArrowRight, Mail, Phone, Atom, Zap } from "lucide-react";
+import { Download, ArrowRight, Mail, Phone, Atom, Zap, Eye } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 function GithubIcon({ size = 18, className = "" }: { size?: number; className?: string }) {
@@ -120,6 +120,14 @@ export default function Hero() {
                 style={{ backgroundImage: "linear-gradient(90deg, var(--hero-blue), var(--hero-purple))" }}
               >
                 View My Work <ArrowRight size={16} />
+              </a>
+              <a
+                href="/resume.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg border border-border-dim text-foreground font-semibold text-sm hover:border-accent-cyan hover:text-accent-cyan transition"
+              >
+                View Resume <Eye size={16} />
               </a>
               <a
                 href="/resume.pdf"
