@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-interface Particle {
+interface Ember {
   x: number;
   y: number;
   vx: number;
@@ -11,6 +11,15 @@ interface Particle {
   maxLife: number;
   size: number;
   hue: number;
+}
+
+interface Tongue {
+  seed: number;
+  speed1: number;
+  speed2: number;
+  freq1: number;
+  freq2: number;
+  ampBase: number;
 }
 
 export default function FireTransition({
@@ -40,10 +49,10 @@ export default function FireTransition({
     setActive(true);
     setProgress(0);
 
-    const duration = 1500;
+    const duration = 1750;
     const start = performance.now();
     let raf: number;
-    const particles: Particle[] = [];
+    const embers: Ember[] = [];
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
 
@@ -52,50 +61,119 @@ export default function FireTransition({
       canvas.height = window.innerHeight;
     }
 
-    function spawnParticles(edgeX: number, h: number) {
-      for (let i = 0; i < 4; i++) {
-        particles.push({
-          x: edgeX + (Math.random() - 0.5) * 30,
+    const SEGMENTS = 36;
+    const segHeight = canvas ? canvas.height / SEGMENTS + 2 : 20;
+    const tongues: Tongue[] = Array.from({ length: SEGMENTS }, () => ({
+      seed: Math.random() * 1000,
+      speed1: 0.006 + Math.random() * 0.004,
+      speed2: 0.014 + Math.random() * 0.006,
+      freq1: 0.5 + Math.random() * 0.5,
+      freq2: 1.2 + Math.random() * 0.8,
+      ampBase: 60 + Math.random() * 70,
+    }));
+
+    function spawnEmbers(edgeX: number, h: number, count: number) {
+      for (let i = 0; i < count; i++) {
+        embers.push({
+          x: edgeX + (Math.random() - 0.5) * 60,
           y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.8,
-          vy: -Math.random() * 1.8 - 0.4,
+          vx: (Math.random() - 0.5) * 1.2,
+          vy: -Math.random() * 2.4 - 0.6,
           life: 0,
-          maxLife: 35 + Math.random() * 45,
-          size: 1.5 + Math.random() * 3,
-          hue: 18 + Math.random() * 35,
+          maxLife: 40 + Math.random() * 55,
+          size: 1.2 + Math.random() * 3,
+          hue: 15 + Math.random() * 35,
         });
       }
     }
 
+    function drawFlameWall(edgeX: number, h: number, elapsed: number, fadeOut: number) {
+      if (!ctx) return;
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+
+      for (let i = 0; i < SEGMENTS; i++) {
+        const tongue = tongues[i];
+        const y = i * segHeight;
+        const flicker =
+          Math.sin(elapsed * tongue.speed1 + tongue.seed + i * tongue.freq1) * 0.5 +
+          Math.sin(elapsed * tongue.speed2 + tongue.seed * 1.3 + i * tongue.freq2) * 0.5;
+        const tongueHeight = Math.max(
+          20,
+          (tongue.ampBase + flicker * tongue.ampBase * 0.6) * fadeOut
+        );
+        const xJitter = Math.sin(elapsed * 0.01 + i * 0.7 + tongue.seed) * 14;
+        const baseX = edgeX + xJitter;
+
+        // each tongue: a soft vertical teardrop, wide at bottom (base), tapering upward-ish sideways
+        const grad = ctx.createLinearGradient(baseX - tongueHeight, y, baseX + 6, y);
+        grad.addColorStop(0, "rgba(255, 241, 176, 0)");
+        grad.addColorStop(0.35, "rgba(253, 186, 116, 0.55)");
+        grad.addColorStop(0.65, "rgba(251, 146, 60, 0.85)");
+        grad.addColorStop(0.88, "rgba(239, 68, 68, 0.9)");
+        grad.addColorStop(1, "rgba(127, 29, 29, 0.6)");
+
+        ctx.beginPath();
+        ctx.moveTo(baseX + 8, y);
+        ctx.quadraticCurveTo(
+          baseX - tongueHeight * 0.55,
+          y + segHeight * 0.3,
+          baseX - tongueHeight,
+          y + segHeight * 0.5
+        );
+        ctx.quadraticCurveTo(
+          baseX - tongueHeight * 0.55,
+          y + segHeight * 0.7,
+          baseX + 8,
+          y + segHeight
+        );
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
     function tick(now: number) {
-      const t = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 3);
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 2.4);
       setProgress(eased);
+
+      // fade the flame intensity in over the first 10% and out over the last 25%
+      const fadeIn = Math.min(t / 0.08, 1);
+      const fadeOut = t > 0.75 ? Math.max(1 - (t - 0.75) / 0.25, 0) : 1;
+      const intensity = fadeIn * fadeOut;
 
       if (ctx && canvas) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const edgeX = eased * (canvas.width + 240) - 120;
-        if (t < 0.96) spawnParticles(edgeX, canvas.height);
+        const edgeX = eased * (canvas.width + 260) - 130;
 
-        for (let i = particles.length - 1; i >= 0; i--) {
-          const p = particles[i];
+        if (t < 0.97) {
+          drawFlameWall(edgeX, canvas.height, elapsed, Math.max(intensity, 0.15));
+          spawnEmbers(edgeX, canvas.height, Math.round(6 * intensity + 1));
+        }
+
+        for (let i = embers.length - 1; i >= 0; i--) {
+          const p = embers[i];
           p.life++;
           p.x += p.vx;
           p.y += p.vy;
-          p.vy -= 0.004;
+          p.vy -= 0.005;
           const lifeRatio = p.life / p.maxLife;
           if (lifeRatio >= 1) {
-            particles.splice(i, 1);
+            embers.splice(i, 1);
             continue;
           }
           const alpha = 1 - lifeRatio;
           ctx.beginPath();
           ctx.arc(p.x, p.y, Math.max(p.size * (1 - lifeRatio * 0.6), 0.4), 0, Math.PI * 2);
           ctx.fillStyle = `hsla(${p.hue}, 100%, ${55 + lifeRatio * 25}%, ${alpha})`;
-          ctx.shadowBlur = 10;
+          ctx.shadowBlur = 12;
           ctx.shadowColor = `hsla(${p.hue}, 100%, 60%, ${alpha})`;
           ctx.fill();
         }
+        ctx.shadowBlur = 0;
       }
 
       if (t < 1) {
@@ -125,40 +203,20 @@ export default function FireTransition({
         style={{
           backgroundColor: curtainColor,
           clipPath: `polygon(${edgePercent}% 0%, 100% 0%, 100% 100%, ${Math.max(
-            edgePercent - 6,
+            edgePercent - 8,
             0
           )}% 100%)`,
         }}
       />
 
-      {/* wide soft fire glow at the wipe edge */}
+      {/* ambient heat glow bleeding ahead of the flame wall */}
       <div
-        className="absolute top-0 bottom-0 w-40 blur-3xl"
+        className="absolute top-0 bottom-0 w-64 blur-3xl"
         style={{
-          left: `calc(${edgePercent}% - 80px)`,
+          left: `calc(${edgePercent}% - 128px)`,
           backgroundImage:
-            "linear-gradient(90deg, transparent, #FDE047 25%, #FB923C 50%, #EF4444 75%, transparent)",
-          opacity: 0.85,
-        }}
-      />
-      {/* tighter core glow */}
-      <div
-        className="absolute top-0 bottom-0 w-14 blur-xl"
-        style={{
-          left: `calc(${edgePercent}% - 28px)`,
-          backgroundImage:
-            "linear-gradient(90deg, transparent, #FFF7ED 40%, #FDBA74 60%, transparent)",
-          opacity: 0.9,
-        }}
-      />
-      {/* bright hairline flare */}
-      <div
-        className="absolute top-0 bottom-0 w-2"
-        style={{
-          left: `calc(${edgePercent}% - 4px)`,
-          background: "#FFFBEB",
-          opacity: 0.8,
-          filter: "blur(1px)",
+            "linear-gradient(90deg, transparent, #FDE047 30%, #FB923C 55%, #EF4444 80%, transparent)",
+          opacity: 0.5,
         }}
       />
 
