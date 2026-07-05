@@ -9,7 +9,6 @@ import {
   MapPin,
   Copy,
   Check,
-  Send,
   Rocket,
   Code2,
   Smartphone,
@@ -53,8 +52,6 @@ function CardShell({ children, className = "" }: { children: React.ReactNode; cl
 
 export default function Contact() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   const handleCopy = async (key: string, value: string) => {
     try {
@@ -64,18 +61,6 @@ export default function Contact() {
     } catch {
       // clipboard unavailable, ignore silently
     }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus("sending");
-    const body = `From: ${form.name} (${form.email})%0D%0A%0D%0A${encodeURIComponent(form.message)}`;
-    const mailto = `mailto:${profile.email}?subject=${encodeURIComponent(form.subject || "Portfolio contact")}&body=${body}`;
-    setTimeout(() => {
-      window.location.href = mailto;
-      setStatus("sent");
-      setTimeout(() => setStatus("idle"), 2500);
-    }, 700);
   };
 
   return (
@@ -138,18 +123,17 @@ export default function Contact() {
           </p>
         </motion.div>
 
-        {/* two cards */}
-        <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 mb-10 sm:mb-14">
-          {/* LEFT: Developer Endpoint */}
-          <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}>
-            <CardShell className="h-full">
-              <div className="p-6 sm:p-7 h-full flex flex-col">
+        {/* developer endpoint card */}
+        <div className="mb-10 sm:mb-14 max-w-2xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}>
+            <CardShell>
+              <div className="p-6 sm:p-8">
                 <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
                   Developer Endpoint
                 </h3>
 
-                <div className="space-y-3 flex-1">
+                <div className="grid sm:grid-cols-2 gap-3">
                   {endpoints.map((ep) => {
                     const Icon = ep.icon;
                     const isCopied = copiedKey === ep.key;
@@ -157,7 +141,6 @@ export default function Contact() {
                       <div
                         key={ep.key}
                         className="group relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-all hover:border-white/20"
-                        style={{ boxShadow: "0 0 0 rgba(0,0,0,0)" }}
                       >
                         <span
                           className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105"
@@ -200,101 +183,18 @@ export default function Contact() {
                       AVAILABLE
                     </span>
                   </div>
-                  <div className="space-y-1.5 text-[12px]">
-                    <div className="flex justify-between">
+                  <div className="grid sm:grid-cols-2 gap-1.5 text-[12px]">
+                    <div className="flex justify-between gap-2">
                       <span className="text-white/45">Response Time</span>
                       <span className="text-white/80">Within 24 Hours</span>
                     </div>
-                    <div className="flex justify-between">
+                    <div className="flex justify-between gap-2">
                       <span className="text-white/45">Preferred Role</span>
                       <span className="text-white/80">Full Stack Developer</span>
                     </div>
                   </div>
                 </div>
               </div>
-            </CardShell>
-          </motion.div>
-
-          {/* RIGHT: Message Terminal */}
-          <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.55, delay: 0.1 }}>
-            <CardShell className="h-full">
-              <form onSubmit={handleSubmit} className="h-full flex flex-col">
-                {/* terminal top bar */}
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.08]">
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#F87171]/70" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24]/70" />
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#34D399]/70" />
-                  <span className="ml-2 text-xs font-mono text-white/40">connect.sh</span>
-                </div>
-
-                <div className="p-6 sm:p-7 flex-1 flex flex-col gap-4">
-                  <label className="block">
-                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ name</span>
-                    <input
-                      required
-                      type="text"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      placeholder="Juan Dela Cruz"
-                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05]"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ email</span>
-                    <input
-                      required
-                      type="email"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      placeholder="you@example.com"
-                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05]"
-                    />
-                  </label>
-                  <label className="block">
-                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ subject</span>
-                    <input
-                      type="text"
-                      value={form.subject}
-                      onChange={(e) => setForm({ ...form, subject: e.target.value })}
-                      placeholder="Job opportunity"
-                      className="w-full rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05]"
-                    />
-                  </label>
-                  <label className="block flex-1 flex flex-col">
-                    <span className="text-[12px] font-mono text-[#A855F7] mb-1.5 block">$ message</span>
-                    <textarea
-                      required
-                      value={form.message}
-                      onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      placeholder="Tell me about the opportunity..."
-                      rows={4}
-                      className="w-full flex-1 rounded-lg border border-white/10 bg-white/[0.03] px-3.5 py-2.5 text-sm text-white placeholder-white/25 font-mono outline-none transition-colors focus:border-[#A855F7]/60 focus:bg-white/[0.05] resize-none"
-                    />
-                  </label>
-
-                  <button
-                    type="submit"
-                    disabled={status !== "idle"}
-                    className="mt-1 inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white transition-transform active:scale-[0.98] hover:brightness-110 disabled:opacity-70"
-                    style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
-                  >
-                    {status === "sending" ? (
-                      <>
-                        <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                        Connecting...
-                      </>
-                    ) : status === "sent" ? (
-                      <>
-                        <Check size={16} /> Connection Sent
-                      </>
-                    ) : (
-                      <>
-                        Execute Connection <Send size={15} />
-                      </>
-                    )}
-                  </button>
-                </div>
-              </form>
             </CardShell>
           </motion.div>
         </div>
