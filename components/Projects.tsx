@@ -81,7 +81,7 @@ export default function Projects() {
           <h2 className="relative inline-block text-3xl sm:text-5xl font-bold tracking-tight">
             <span
               className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}
+              style={{ backgroundImage: "linear-gradient(90deg, var(--foreground), #A855F7)" }}
             >
               printed_receipts
             </span>

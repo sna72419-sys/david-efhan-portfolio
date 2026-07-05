@@ -61,7 +61,7 @@ const languages = [
 
 const frameworks = [
   { name: "Laravel", desc: "PHP framework for web apps", version: "v12", icon: Server, color: "#FF2D20" },
-  { name: "Next.js", desc: "React framework for production", version: "v15", icon: Globe, color: "#FFFFFF" },
+  { name: "Next.js", desc: "React framework for production", version: "v15", icon: Globe, color: "#94A3B8" },
   { name: "React", desc: "UI component library", version: "v18", icon: Atom, color: "#61DAFB" },
   { name: "Android SDK", desc: "Native Android development", version: "API 34", icon: Smartphone, color: "#3DDC84" },
   { name: "Supabase", desc: "Backend-as-a-Service", version: "v2", icon: Zap, color: "#3ECF8E" },
@@ -170,7 +170,7 @@ export default function Skills() {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
         {/* header */}
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-10 sm:mb-14">          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}>
+            <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, var(--foreground), #A855F7)" }}>
               system_status
             </span>
             <motion.span

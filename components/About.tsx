@@ -29,7 +29,7 @@ function GithubIcon({ size = 16, className = "" }: { size?: number; className?: 
 
 const techBadges = [
   { label: "Laravel", color: "#FF2D20", position: "top-0 left-0 sm:left-4", delay: 0 },
-  { label: "Next.js", color: "#FFFFFF", position: "top-4 right-0 sm:right-1", delay: 0.5 },
+  { label: "Next.js", color: "#94A3B8", position: "top-4 right-0 sm:right-1", delay: 0.5 },
   { label: "React", color: "#61DAFB", position: "bottom-16 -left-2 sm:left-0", icon: Atom, delay: 1 },
   { label: "TypeScript", color: "#3178C6", position: "bottom-6 right-0 sm:-right-1", delay: 1.5 },
   { label: "Supabase", color: "#3ECF8E", position: "-bottom-3 left-1/3", icon: Zap, delay: 2 },
@@ -125,7 +125,7 @@ export default function About() {
         >          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
             <span
               className="bg-clip-text text-transparent"
-              style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}
+              style={{ backgroundImage: "linear-gradient(90deg, var(--foreground), #A855F7)" }}
             >
               developer_profile()
             </span>

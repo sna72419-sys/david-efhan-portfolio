@@ -122,7 +122,7 @@ export default function Experience() {
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
         {/* header */}
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-14 sm:mb-20">          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
-            <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}>
+            <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, var(--foreground), #A855F7)" }}>
               commit_log()
             </span>
             <motion.span

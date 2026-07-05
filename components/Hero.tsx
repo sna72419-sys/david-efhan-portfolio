@@ -17,7 +17,7 @@ function GithubIcon({ size = 18, className = "" }: { size?: number; className?: 
 
 const techBadges = [
   { label: "Laravel", color: "#FF2D20", position: "top-0 left-2 sm:left-8", delay: 0 },
-  { label: "Next.js", color: "#FFFFFF", position: "top-6 right-0 sm:right-4", delay: 0.5 },
+  { label: "Next.js", color: "#94A3B8", position: "top-6 right-0 sm:right-4", delay: 0.5 },
   { label: "React", color: "#61DAFB", position: "bottom-24 left-0", icon: Atom, delay: 1 },
   { label: "TypeScript", color: "#3178C6", position: "bottom-8 right-0 sm:right-2", delay: 1.5 },
   { label: "Supabase", color: "#3ECF8E", position: "-bottom-2 left-1/3", icon: Zap, delay: 2 },
