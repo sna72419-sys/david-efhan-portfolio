@@ -52,7 +52,8 @@ export default function ResumeViewerModal({
           const page = await pdf.getPage(pageNum);
           const containerWidth = containerRef.current.clientWidth || 700;
           const baseViewport = page.getViewport({ scale: 1 });
-          const scale = (containerWidth / baseViewport.width) * (window.devicePixelRatio > 1 ? 2 : 1.5);
+          const pixelRatio = window.devicePixelRatio || 1;
+          const scale = (containerWidth / baseViewport.width) * pixelRatio * 2.5;
           const viewport = page.getViewport({ scale });
 
           const canvas = document.createElement("canvas");
@@ -67,6 +68,8 @@ export default function ResumeViewerModal({
 
           const context = canvas.getContext("2d");
           if (!context) continue;
+          context.imageSmoothingEnabled = true;
+          context.imageSmoothingQuality = "high";
 
           if (cancelled || !containerRef.current) return;
           containerRef.current.appendChild(canvas);
