@@ -13,13 +13,12 @@ interface Ember {
   hue: number;
 }
 
-interface Tongue {
+interface Blob {
+  yRatio: number;
   seed: number;
   speed1: number;
   speed2: number;
-  freq1: number;
-  freq2: number;
-  ampBase: number;
+  baseRadius: number;
 }
 
 export default function FireTransition({
@@ -38,9 +37,12 @@ export default function FireTransition({
   useEffect(() => {
     if (trigger === 0) return;
 
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
+    let prefersReducedMotion = false;
+    try {
+      prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    } catch {
+      // ignore
+    }
     if (prefersReducedMotion) {
       onDone();
       return;
@@ -54,22 +56,21 @@ export default function FireTransition({
     let raf: number;
     const embers: Ember[] = [];
     const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
+    const ctx = canvas ? canvas.getContext("2d") : null;
 
     if (canvas) {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     }
 
-    const SEGMENTS = 36;
-    const segHeight = canvas ? canvas.height / SEGMENTS + 2 : 20;
-    const tongues: Tongue[] = Array.from({ length: SEGMENTS }, () => ({
+    const height = canvas ? canvas.height : 800;
+    const BLOB_COUNT = 22;
+    const blobs: Blob[] = Array.from({ length: BLOB_COUNT }, (_, i) => ({
+      yRatio: i / (BLOB_COUNT - 1),
       seed: Math.random() * 1000,
-      speed1: 0.006 + Math.random() * 0.004,
-      speed2: 0.014 + Math.random() * 0.006,
-      freq1: 0.5 + Math.random() * 0.5,
-      freq2: 1.2 + Math.random() * 0.8,
-      ampBase: 60 + Math.random() * 70,
+      speed1: 0.0035 + Math.random() * 0.003,
+      speed2: 0.007 + Math.random() * 0.004,
+      baseRadius: 45 + Math.random() * 45,
     }));
 
     function spawnEmbers(edgeX: number, h: number, count: number) {
@@ -78,7 +79,7 @@ export default function FireTransition({
           x: edgeX + (Math.random() - 0.5) * 60,
           y: Math.random() * h,
           vx: (Math.random() - 0.5) * 1.2,
-          vy: -Math.random() * 2.4 - 0.6,
+          vy: -Math.random() * 2.2 - 0.6,
           life: 0,
           maxLife: 40 + Math.random() * 55,
           size: 1.2 + Math.random() * 3,
@@ -87,102 +88,91 @@ export default function FireTransition({
       }
     }
 
-    function drawFlameWall(edgeX: number, h: number, elapsed: number, fadeOut: number) {
+    function drawFlames(edgeX: number, h: number, elapsed: number, intensity: number) {
       if (!ctx) return;
       ctx.save();
       ctx.globalCompositeOperation = "lighter";
 
-      for (let i = 0; i < SEGMENTS; i++) {
-        const tongue = tongues[i];
-        const y = i * segHeight;
-        const flicker =
-          Math.sin(elapsed * tongue.speed1 + tongue.seed + i * tongue.freq1) * 0.5 +
-          Math.sin(elapsed * tongue.speed2 + tongue.seed * 1.3 + i * tongue.freq2) * 0.5;
-        const tongueHeight = Math.max(
-          20,
-          (tongue.ampBase + flicker * tongue.ampBase * 0.6) * fadeOut
-        );
-        const xJitter = Math.sin(elapsed * 0.01 + i * 0.7 + tongue.seed) * 14;
-        const baseX = edgeX + xJitter;
+      for (let i = 0; i < blobs.length; i++) {
+        const b = blobs[i];
+        const y = b.yRatio * h;
+        const wobble =
+          Math.sin(elapsed * b.speed1 + b.seed) * 0.5 +
+          Math.sin(elapsed * b.speed2 + b.seed * 1.7) * 0.5;
+        const radius = Math.max(8, b.baseRadius * intensity * (0.7 + wobble * 0.4));
+        const x = edgeX + wobble * 22;
 
-        // each tongue: a soft vertical teardrop, wide at bottom (base), tapering upward-ish sideways
-        const grad = ctx.createLinearGradient(baseX - tongueHeight, y, baseX + 6, y);
-        grad.addColorStop(0, "rgba(255, 241, 176, 0)");
-        grad.addColorStop(0.35, "rgba(253, 186, 116, 0.55)");
-        grad.addColorStop(0.65, "rgba(251, 146, 60, 0.85)");
-        grad.addColorStop(0.88, "rgba(239, 68, 68, 0.9)");
-        grad.addColorStop(1, "rgba(127, 29, 29, 0.6)");
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
+        grad.addColorStop(0, "rgba(255, 247, 214, 0.95)");
+        grad.addColorStop(0.28, "rgba(253, 224, 71, 0.85)");
+        grad.addColorStop(0.55, "rgba(251, 146, 60, 0.7)");
+        grad.addColorStop(0.8, "rgba(239, 68, 68, 0.45)");
+        grad.addColorStop(1, "rgba(239, 68, 68, 0)");
 
-        ctx.beginPath();
-        ctx.moveTo(baseX + 8, y);
-        ctx.quadraticCurveTo(
-          baseX - tongueHeight * 0.55,
-          y + segHeight * 0.3,
-          baseX - tongueHeight,
-          y + segHeight * 0.5
-        );
-        ctx.quadraticCurveTo(
-          baseX - tongueHeight * 0.55,
-          y + segHeight * 0.7,
-          baseX + 8,
-          y + segHeight
-        );
-        ctx.closePath();
         ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, radius, 0, Math.PI * 2);
         ctx.fill();
       }
       ctx.restore();
     }
 
     function tick(now: number) {
-      const elapsed = now - start;
-      const t = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 2.4);
-      setProgress(eased);
+      try {
+        const elapsed = now - start;
+        const t = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 2.4);
+        setProgress(eased);
 
-      // fade the flame intensity in over the first 10% and out over the last 25%
-      const fadeIn = Math.min(t / 0.08, 1);
-      const fadeOut = t > 0.75 ? Math.max(1 - (t - 0.75) / 0.25, 0) : 1;
-      const intensity = fadeIn * fadeOut;
+        const fadeIn = Math.min(t / 0.08, 1);
+        const fadeOut = t > 0.75 ? Math.max(1 - (t - 0.75) / 0.25, 0) : 1;
+        const intensity = Math.max(fadeIn * fadeOut, 0.12);
 
-      if (ctx && canvas) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const edgeX = eased * (canvas.width + 260) - 130;
+        if (ctx && canvas) {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          const edgeX = eased * (canvas.width + 260) - 130;
 
-        if (t < 0.97) {
-          drawFlameWall(edgeX, canvas.height, elapsed, Math.max(intensity, 0.15));
-          spawnEmbers(edgeX, canvas.height, Math.round(6 * intensity + 1));
-        }
-
-        for (let i = embers.length - 1; i >= 0; i--) {
-          const p = embers[i];
-          p.life++;
-          p.x += p.vx;
-          p.y += p.vy;
-          p.vy -= 0.005;
-          const lifeRatio = p.life / p.maxLife;
-          if (lifeRatio >= 1) {
-            embers.splice(i, 1);
-            continue;
+          if (t < 0.97) {
+            drawFlames(edgeX, canvas.height, elapsed, intensity);
+            spawnEmbers(edgeX, canvas.height, Math.round(5 * intensity) + 1);
           }
-          const alpha = 1 - lifeRatio;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, Math.max(p.size * (1 - lifeRatio * 0.6), 0.4), 0, Math.PI * 2);
-          ctx.fillStyle = `hsla(${p.hue}, 100%, ${55 + lifeRatio * 25}%, ${alpha})`;
-          ctx.shadowBlur = 12;
-          ctx.shadowColor = `hsla(${p.hue}, 100%, 60%, ${alpha})`;
-          ctx.fill();
-        }
-        ctx.shadowBlur = 0;
-      }
 
-      if (t < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        setTimeout(() => {
-          setActive(false);
-          onDone();
-        }, 300);
+          for (let i = embers.length - 1; i >= 0; i--) {
+            const p = embers[i];
+            p.life++;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy -= 0.005;
+            const lifeRatio = p.life / p.maxLife;
+            if (lifeRatio >= 1) {
+              embers.splice(i, 1);
+              continue;
+            }
+            const alpha = 1 - lifeRatio;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, Math.max(p.size * (1 - lifeRatio * 0.6), 0.4), 0, Math.PI * 2);
+            ctx.fillStyle = `hsla(${p.hue}, 100%, ${55 + lifeRatio * 25}%, ${alpha})`;
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = `hsla(${p.hue}, 100%, 60%, ${alpha})`;
+            ctx.fill();
+          }
+          ctx.shadowBlur = 0;
+        }
+
+        if (t < 1) {
+          raf = requestAnimationFrame(tick);
+        } else {
+          setTimeout(() => {
+            setActive(false);
+            onDone();
+          }, 300);
+        }
+      } catch (err) {
+        // Never let a drawing error silently kill the transition —
+        // fail safe by finishing immediately.
+        console.error("FireTransition render error:", err);
+        setActive(false);
+        onDone();
       }
     }
 
@@ -197,7 +187,6 @@ export default function FireTransition({
 
   return (
     <div className="fixed inset-0 z-[200] pointer-events-none overflow-hidden">
-      {/* curtain of the old theme, wiped away to reveal the new one underneath */}
       <div
         className="absolute inset-0"
         style={{
@@ -209,14 +198,13 @@ export default function FireTransition({
         }}
       />
 
-      {/* ambient heat glow bleeding ahead of the flame wall */}
       <div
         className="absolute top-0 bottom-0 w-64 blur-3xl"
         style={{
           left: `calc(${edgePercent}% - 128px)`,
           backgroundImage:
             "linear-gradient(90deg, transparent, #FDE047 30%, #FB923C 55%, #EF4444 80%, transparent)",
-          opacity: 0.5,
+          opacity: 0.45,
         }}
       />
 
