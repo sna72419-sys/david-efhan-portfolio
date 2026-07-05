@@ -155,12 +155,26 @@ export default function About() {
             className="flex flex-col items-center lg:items-start"
           >
             <div className="relative w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] mx-auto lg:mx-0">
-              {/* animated gradient blob */}
+              {/* gradient blob (matches Hero) */}
               <div
-                className="absolute inset-[-14%] rounded-full blur-2xl opacity-60 spin-slow"
-                style={{ backgroundImage: "linear-gradient(135deg, #7C3AED, #3B82F6)" }}
+                className="absolute inset-[8%] rounded-full blur-2xl opacity-70"
+                style={{ backgroundImage: "linear-gradient(135deg, #3B82F6, #8B5CF6)" }}
                 aria-hidden
               />
+              <div
+                className="absolute inset-[8%] rounded-full opacity-90"
+                style={{ backgroundImage: "linear-gradient(135deg, #3B82F6, #8B5CF6)" }}
+                aria-hidden
+              />
+
+              {/* orbit rings (matches Hero) */}
+              <div className="absolute inset-[-6%] rounded-full border border-white/10 spin-slow" aria-hidden>
+                <span className="absolute -top-1 left-1/2 w-2 h-2 rounded-full bg-[#5EEAD4]" />
+              </div>
+              <div className="absolute inset-[4%] rounded-full border border-white/[0.08]" aria-hidden>
+                <span className="absolute top-1/4 -right-1 w-1.5 h-1.5 rounded-full bg-[#A855F7]" />
+              </div>
+
               <div className="relative w-full h-full rounded-full p-1" style={{ backgroundImage: "linear-gradient(135deg, #7C3AED, #3B82F6)" }}>
                 <div className="w-full h-full rounded-full overflow-hidden relative bg-[#101827]">
                   <Image
