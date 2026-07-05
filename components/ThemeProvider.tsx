@@ -1,8 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import FireTransition from "@/components/FireTransition";
 
 type Theme = "dark" | "light";
+
+const THEME_BG: Record<Theme, string> = {
+  dark: "#080B14",
+  light: "#F7F8FA",
+};
 
 const ThemeContext = createContext<{
   theme: Theme;
@@ -15,6 +21,8 @@ const ThemeContext = createContext<{
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
+  const [fireTrigger, setFireTrigger] = useState(0);
+  const [curtainColor, setCurtainColor] = useState(THEME_BG.dark);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme") as Theme | null;
@@ -34,12 +42,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme, mounted]);
 
   const toggleTheme = () => {
-    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    const from = theme;
+    const to: Theme = from === "dark" ? "light" : "dark";
+    setCurtainColor(THEME_BG[from]);
+    setTheme(to);
+    setFireTrigger((n) => n + 1);
   };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
+      <FireTransition trigger={fireTrigger} curtainColor={curtainColor} onDone={() => {}} />
     </ThemeContext.Provider>
   );
 }
