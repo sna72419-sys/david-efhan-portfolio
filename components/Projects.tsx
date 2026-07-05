@@ -44,8 +44,8 @@ export default function Projects() {
   return (
     <section
       id="projects"
-      className="relative py-16 sm:py-28 border-t border-white/[0.08] overflow-hidden"
-      style={{ backgroundColor: "#080B14" }}
+      className="relative py-16 sm:py-28 border-t border-foreground/[0.08] overflow-hidden"
+      style={{ backgroundColor: "var(--page-bg)" }}
     >
       {/* ambient glow decorations */}
       <div
@@ -63,7 +63,7 @@ export default function Projects() {
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            "linear-gradient(rgba(var(--fg-rgb),0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--fg-rgb),0.6) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         aria-hidden
@@ -117,13 +117,13 @@ export default function Projects() {
                   intensity={5}
                   className="group relative rounded-[24px] p-[1px] transition-all duration-300"
                   style={{
-                    backgroundImage: `linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02) 40%, ${meta.glow} 120%)`,
+                    backgroundImage: `linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02) 40%, ${meta.glow} 120%)`,
                   }}
                 >
                 <div
                   className="relative h-full rounded-[23px] p-6 flex flex-col overflow-hidden backdrop-blur-xl transition-shadow duration-300 group-hover:shadow-2xl"
                   style={{
-                    backgroundColor: "#101827",
+                    backgroundColor: "var(--card-bg)",
                     boxShadow: `0 0 0 rgba(0,0,0,0)`,
                   }}
                 >
@@ -137,10 +137,10 @@ export default function Projects() {
                   {/* top row */}
                   <div className="relative flex items-center justify-between mb-5">
                     <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center font-mono text-xs font-bold text-white"
+                      className="w-10 h-10 rounded-xl flex items-center justify-center font-mono text-xs font-bold text-foreground"
                       style={{
-                        backgroundColor: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.08)",
+                        backgroundColor: "rgba(var(--fg-rgb),0.04)",
+                        border: "1px solid rgba(var(--fg-rgb),0.08)",
                         boxShadow: `0 0 20px ${meta.glow}`,
                       }}
                     >
@@ -155,16 +155,16 @@ export default function Projects() {
                   </div>
 
                   {/* title block */}
-                  <div className="relative text-center pb-4 mb-4 border-b border-white/[0.08]">
-                    <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-white/35 mb-1.5">
+                  <div className="relative text-center pb-4 mb-4 border-b border-foreground/[0.08]">
+                    <p className="text-[10px] font-mono tracking-[0.3em] uppercase text-foreground/35 mb-1.5">
                       Dev Receipt
                     </p>
-                    <h3 className="text-lg font-bold text-white">{p.title}</h3>
-                    <p className="text-[11.5px] text-white/45 mt-1">{p.type}</p>
+                    <h3 className="text-lg font-bold text-foreground">{p.title}</h3>
+                    <p className="text-[11.5px] text-foreground/45 mt-1">{p.type}</p>
                   </div>
 
                   {/* meta row */}
-                  <div className="relative flex justify-between text-[11px] font-mono text-white/40 mb-4">
+                  <div className="relative flex justify-between text-[11px] font-mono text-foreground/40 mb-4">
                     <span>No.{p.receiptNo}</span>
                     <span>{p.year}</span>
                   </div>
@@ -176,7 +176,7 @@ export default function Projects() {
                       return (
                         <li
                           key={i}
-                          className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 -mx-2 transition-colors duration-200 hover:bg-white/[0.04]"
+                          className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 -mx-2 transition-colors duration-200 hover:bg-foreground/[0.04]"
                         >
                           <span
                             className="shrink-0 w-6 h-6 rounded-md flex items-center justify-center"
@@ -184,10 +184,10 @@ export default function Projects() {
                           >
                             <FIcon size={12} style={{ color: meta.color }} />
                           </span>
-                          <span className="font-mono text-[10px] text-white/30 shrink-0">
+                          <span className="font-mono text-[10px] text-foreground/30 shrink-0">
                             {String(i + 1).padStart(2, "0")}
                           </span>
-                          <span className="text-[12.5px] text-white/75 leading-snug">{item}</span>
+                          <span className="text-[12.5px] text-foreground/75 leading-snug">{item}</span>
                         </li>
                       );
                     })}
@@ -195,14 +195,14 @@ export default function Projects() {
 
                   {/* tech stack pills */}
                   <div className="relative mb-6">
-                    <p className="text-[10px] uppercase tracking-widest text-white/35 mb-2 font-mono">
+                    <p className="text-[10px] uppercase tracking-widest text-foreground/35 mb-2 font-mono">
                       Stack
                     </p>
                     <div className="flex flex-wrap gap-1.5">
                       {p.stack.map((s) => (
                         <span
                           key={s}
-                          className="px-2.5 py-1 rounded-full text-[10.5px] font-medium text-white/70 border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm transition-all hover:border-white/20 hover:text-white"
+                          className="px-2.5 py-1 rounded-full text-[10.5px] font-medium text-foreground/70 border border-foreground/[0.08] bg-foreground/[0.03] backdrop-blur-sm transition-all hover:border-foreground/20 hover:text-foreground"
                         >
                           {s}
                         </span>
@@ -220,7 +220,7 @@ export default function Projects() {
                         className="group/btn relative flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white overflow-hidden transition-transform active:scale-[0.98]"
                         style={{ backgroundImage: "linear-gradient(90deg, #7C3AED, #3B82F6)" }}
                       >
-                        <span className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-white/10" />
+                        <span className="absolute inset-0 opacity-0 group-hover/btn:opacity-100 transition-opacity bg-foreground/10" />
                         <span className="relative">Visit Live Site</span>
                         <ArrowUpRight size={15} className="relative transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                       </a>
@@ -229,7 +229,7 @@ export default function Projects() {
                         href="https://github.com/sna72419-sys"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-white/85 border border-white/10 bg-white/[0.03] backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/[0.06]"
+                        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm text-foreground/85 border border-foreground/10 bg-foreground/[0.03] backdrop-blur-sm transition-all hover:border-foreground/25 hover:bg-foreground/[0.06]"
                       >
                         <GithubIcon size={15} />
                         View on GitHub
@@ -251,12 +251,12 @@ export default function Projects() {
           transition={{ duration: 0.6 }}
           className="relative mt-14 sm:mt-16 rounded-[24px] p-[1px]"
           style={{
-            backgroundImage: "linear-gradient(120deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))",
+            backgroundImage: "linear-gradient(120deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))",
           }}
         >
           <div
             className="rounded-[23px] p-7 sm:p-10 backdrop-blur-xl flex flex-col lg:flex-row items-start lg:items-center gap-8"
-            style={{ backgroundColor: "#101827" }}
+            style={{ backgroundColor: "var(--card-bg)" }}
           >
             <div className="flex items-start gap-4 flex-1">
               <div
@@ -266,10 +266,10 @@ export default function Projects() {
                 <Code2 size={22} className="text-white" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-bold text-white mb-1.5">
+                <h3 className="text-lg sm:text-xl font-bold text-foreground mb-1.5">
                   Built to solve real operational problems
                 </h3>
-                <p className="text-white/50 text-sm max-w-md">
+                <p className="text-foreground/50 text-sm max-w-md">
                   Every project here runs (or ran) in a real environment —
                   cashiers, inventory staff, and outreach volunteers, not just
                   demo data.
@@ -281,7 +281,7 @@ export default function Projects() {
               {infoBadges.map((b) => (
                 <span
                   key={b}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11.5px] sm:text-xs font-medium text-white/75 border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm transition-all hover:border-[#22C55E]/40 hover:text-white"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[11.5px] sm:text-xs font-medium text-foreground/75 border border-foreground/[0.08] bg-foreground/[0.03] backdrop-blur-sm transition-all hover:border-[#22C55E]/40 hover:text-foreground"
                 >
                   <Check size={12} className="text-[#22C55E] shrink-0" />
                   {b}

@@ -41,9 +41,9 @@ function CardShell({ children, className = "" }: { children: React.ReactNode; cl
   return (
     <div
       className={`rounded-[24px] p-[1px] ${className}`}
-      style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}
+      style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}
     >
-      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
+      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
         {children}
       </div>
     </div>
@@ -66,8 +66,8 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative py-16 sm:py-28 border-t border-white/[0.08] overflow-hidden"
-      style={{ backgroundColor: "#080B14" }}
+      className="relative py-16 sm:py-28 border-t border-foreground/[0.08] overflow-hidden"
+      style={{ backgroundColor: "var(--page-bg)" }}
     >
       {/* ambient glow */}
       <div className="absolute top-0 left-1/4 w-[380px] h-[380px] rounded-full blur-[130px] opacity-20 pointer-events-none" style={{ background: "#7C3AED" }} aria-hidden />
@@ -75,7 +75,7 @@ export default function Contact() {
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(var(--fg-rgb),0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--fg-rgb),0.6) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         aria-hidden
@@ -84,7 +84,7 @@ export default function Contact() {
       {["</>", "{ }", "=>", "#"].map((sym, i) => (
         <span
           key={sym}
-          className="absolute font-mono text-white/[0.05] text-4xl sm:text-5xl font-bold pointer-events-none float-badge select-none"
+          className="absolute font-mono text-foreground/[0.05] text-4xl sm:text-5xl font-bold pointer-events-none float-badge select-none"
           style={{
             top: `${15 + i * 20}%`,
             left: i % 2 === 0 ? "4%" : "auto",
@@ -123,7 +123,7 @@ export default function Contact() {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }}>
             <CardShell>
               <div className="p-6 sm:p-8">
-                <h3 className="text-sm font-bold text-white mb-6 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground mb-6 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#3B82F6] shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
                   Developer Endpoint
                 </h3>
@@ -135,7 +135,7 @@ export default function Contact() {
                     return (
                       <div
                         key={ep.key}
-                        className="group relative flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 transition-all hover:border-white/20"
+                        className="group relative flex items-center gap-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] px-4 py-3 transition-all hover:border-foreground/20"
                       >
                         <span
                           className="shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105"
@@ -144,20 +144,20 @@ export default function Contact() {
                           <Icon size={17} style={{ color: ep.color }} />
                         </span>
                         <div className="min-w-0 flex-1">
-                          <p className="text-[10px] uppercase tracking-widest text-white/35 font-mono">{ep.label}</p>
+                          <p className="text-[10px] uppercase tracking-widest text-foreground/35 font-mono">{ep.label}</p>
                           {ep.href ? (
-                            <a href={ep.href} target={ep.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-[13px] text-white/85 hover:text-white transition-colors truncate block">
+                            <a href={ep.href} target={ep.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-[13px] text-foreground/85 hover:text-foreground transition-colors truncate block">
                               {ep.value}
                             </a>
                           ) : (
-                            <p className="text-[13px] text-white/85 truncate">{ep.value}</p>
+                            <p className="text-[13px] text-foreground/85 truncate">{ep.value}</p>
                           )}
                         </div>
                         <button
                           type="button"
                           onClick={() => handleCopy(ep.key, ep.value)}
                           aria-label={`Copy ${ep.label}`}
-                          className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.06] transition-colors"
+                          className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-foreground/40 hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
                         >
                           {isCopied ? <Check size={14} className="text-[#22C55E]" /> : <Copy size={14} />}
                         </button>
@@ -169,7 +169,7 @@ export default function Contact() {
                 {/* status card */}
                 <div className="mt-5 rounded-xl border border-[#22C55E]/25 bg-[#22C55E]/[0.06] p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] uppercase tracking-widest text-white/40 font-mono">Status</span>
+                    <span className="text-[10px] uppercase tracking-widest text-foreground/40 font-mono">Status</span>
                     <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#22C55E]">
                       <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22C55E] opacity-60" />
@@ -180,12 +180,12 @@ export default function Contact() {
                   </div>
                   <div className="grid sm:grid-cols-2 gap-1.5 text-[12px]">
                     <div className="flex justify-between gap-2">
-                      <span className="text-white/45">Response Time</span>
-                      <span className="text-white/80">Within 24 Hours</span>
+                      <span className="text-foreground/45">Response Time</span>
+                      <span className="text-foreground/80">Within 24 Hours</span>
                     </div>
                     <div className="flex justify-between gap-2">
-                      <span className="text-white/45">Preferred Role</span>
-                      <span className="text-white/80">Full Stack Developer</span>
+                      <span className="text-foreground/45">Preferred Role</span>
+                      <span className="text-foreground/80">Full Stack Developer</span>
                     </div>
                   </div>
                 </div>
@@ -199,14 +199,14 @@ export default function Contact() {
           {availability.map((a) => {
             const Icon = a.icon;
             return (
-              <div key={a.title} className="group rounded-2xl p-[1px] transition-all" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-                <div className="relative rounded-[15px] p-5 h-full backdrop-blur-xl overflow-hidden" style={{ backgroundColor: "#101827" }}>
+              <div key={a.title} className="group rounded-2xl p-[1px] transition-all" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+                <div className="relative rounded-[15px] p-5 h-full backdrop-blur-xl overflow-hidden" style={{ backgroundColor: "var(--card-bg)" }}>
                   <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full blur-2xl opacity-0 group-hover:opacity-30 transition-opacity duration-500" style={{ background: a.color }} aria-hidden />
                   <span className="relative inline-flex w-10 h-10 rounded-xl items-center justify-center mb-3" style={{ backgroundColor: `${a.color}1A` }}>
                     <Icon size={18} style={{ color: a.color }} />
                   </span>
-                  <h4 className="relative text-[13px] font-bold text-white mb-1">{a.title}</h4>
-                  <p className="relative text-[11.5px] text-white/45 leading-snug">{a.desc}</p>
+                  <h4 className="relative text-[13px] font-bold text-foreground mb-1">{a.title}</h4>
+                  <p className="relative text-[11.5px] text-foreground/45 leading-snug">{a.desc}</p>
                 </div>
               </div>
             );

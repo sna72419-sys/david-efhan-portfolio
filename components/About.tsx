@@ -90,8 +90,8 @@ export default function About() {
   return (
     <section
       id="about"
-      className="relative py-16 sm:py-28 border-t border-white/[0.08] overflow-hidden"
-      style={{ backgroundColor: "#080B14" }}
+      className="relative py-16 sm:py-28 border-t border-foreground/[0.08] overflow-hidden"
+      style={{ backgroundColor: "var(--page-bg)" }}
     >
       {/* ambient glow */}
       <div
@@ -108,7 +108,7 @@ export default function About() {
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            "linear-gradient(rgba(var(--fg-rgb),0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--fg-rgb),0.6) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         aria-hidden
@@ -168,10 +168,10 @@ export default function About() {
               />
 
               {/* orbit rings (matches Hero) */}
-              <div className="absolute inset-[-6%] rounded-full border border-white/10 spin-slow" aria-hidden>
+              <div className="absolute inset-[-6%] rounded-full border border-foreground/10 spin-slow" aria-hidden>
                 <span className="absolute -top-1 left-1/2 w-2 h-2 rounded-full bg-[#5EEAD4]" />
               </div>
-              <div className="absolute inset-[4%] rounded-full border border-white/[0.08]" aria-hidden>
+              <div className="absolute inset-[4%] rounded-full border border-foreground/[0.08]" aria-hidden>
                 <span className="absolute top-1/4 -right-1 w-1.5 h-1.5 rounded-full bg-[#A855F7]" />
               </div>
 
@@ -231,11 +231,11 @@ export default function About() {
             {/* availability card */}
             <div
               className="mt-12 sm:mt-10 w-full max-w-xs rounded-2xl p-[1px]"
-              style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}
+              style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}
             >
               <div
                 className="rounded-[15px] p-5 backdrop-blur-xl"
-                style={{ backgroundColor: "#101827" }}
+                style={{ backgroundColor: "var(--card-bg)" }}
               >
                 <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium mb-4"
                   style={{ backgroundColor: "rgba(34,197,94,0.1)", color: "#22C55E", border: "1px solid rgba(34,197,94,0.3)" }}
@@ -245,15 +245,15 @@ export default function About() {
                 </span>
 
                 <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-2.5 text-white/70">
+                  <div className="flex items-center gap-2.5 text-foreground/70">
                     <MapPin size={14} className="text-[#3B82F6] shrink-0" />
                     <span>{profile.location}</span>
                   </div>
-                  <a href={`mailto:${profile.email}`} className="flex items-center gap-2.5 text-white/70 hover:text-white transition-colors">
+                  <a href={`mailto:${profile.email}`} className="flex items-center gap-2.5 text-foreground/70 hover:text-foreground transition-colors">
                     <Mail size={14} className="text-[#3B82F6] shrink-0" />
                     <span className="truncate">{profile.email}</span>
                   </a>
-                  <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-white/70 hover:text-white transition-colors">
+                  <a href={profile.githubUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-foreground/70 hover:text-foreground transition-colors">
                     <GithubIcon size={14} className="text-[#3B82F6] shrink-0" />
                     <span className="truncate">{profile.github}</span>
                   </a>
@@ -263,7 +263,7 @@ export default function About() {
                   <button
                     type="button"
                     onClick={() => setResumeOpen(true)}
-                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-[13px] text-white/85 border border-white/15 transition-all hover:border-white/30 hover:bg-white/[0.04]"
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-lg font-semibold text-[13px] text-foreground/85 border border-foreground/15 transition-all hover:border-foreground/30 hover:bg-foreground/[0.04]"
                   >
                     View <Eye size={13} />
                   </button>
@@ -289,15 +289,15 @@ export default function About() {
             className="space-y-5"
           >
             {/* Card 1: summary.txt */}
-            <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-              <div className="rounded-[15px] overflow-hidden backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
-                <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.08]">
+            <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+              <div className="rounded-[15px] overflow-hidden backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-foreground/[0.08]">
                   <span className="w-2.5 h-2.5 rounded-full bg-[#F87171]/70" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24]/70" />
                   <span className="w-2.5 h-2.5 rounded-full bg-[#34D399]/70" />
-                  <span className="ml-2 text-xs font-mono text-white/40">summary.txt</span>
+                  <span className="ml-2 text-xs font-mono text-foreground/40">summary.txt</span>
                 </div>
-                <p className="px-5 py-5 text-[13.5px] leading-relaxed text-white/70 font-mono">
+                <p className="px-5 py-5 text-[13.5px] leading-relaxed text-foreground/70 font-mono">
                   {profile.summary}
                 </p>
               </div>
@@ -305,17 +305,17 @@ export default function About() {
 
             <div className="grid sm:grid-cols-2 gap-5">
               {/* Card 2: Developer Status */}
-              <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-                <div className="rounded-[15px] p-5 h-full backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
-                  <h3 className="text-sm font-bold text-white mb-4">Developer Status</h3>
+              <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+                <div className="rounded-[15px] p-5 h-full backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
+                  <h3 className="text-sm font-bold text-foreground mb-4">Developer Status</h3>
                   <div className="space-y-3">
                     {statusRows.map((r) => (
                       <div key={r.label} className="flex items-start justify-between gap-3 text-[12.5px]">
-                        <span className="flex items-center gap-2 text-white/45 shrink-0">
+                        <span className="flex items-center gap-2 text-foreground/45 shrink-0">
                           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: r.dot }} />
                           {r.label}
                         </span>
-                        <span className="text-white/80 text-right">{r.value}</span>
+                        <span className="text-foreground/80 text-right">{r.value}</span>
                       </div>
                     ))}
                   </div>
@@ -323,14 +323,14 @@ export default function About() {
               </div>
 
               {/* Card 3: Core Expertise */}
-              <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-                <div className="rounded-[15px] p-5 h-full backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
-                  <h3 className="text-sm font-bold text-white mb-4">Core Expertise</h3>
+              <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+                <div className="rounded-[15px] p-5 h-full backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
+                  <h3 className="text-sm font-bold text-foreground mb-4">Core Expertise</h3>
                   <div className="flex flex-wrap gap-2">
                     {expertise.map((e) => (
                       <span
                         key={e}
-                        className="px-3 py-1.5 rounded-full text-[11.5px] font-medium text-white/85 border border-white/10 transition-all hover:scale-105 hover:border-white/25"
+                        className="px-3 py-1.5 rounded-full text-[11.5px] font-medium text-foreground/85 border border-foreground/10 transition-all hover:scale-105 hover:border-foreground/25"
                         style={{ backgroundImage: "linear-gradient(120deg, rgba(124,58,237,0.15), rgba(59,130,246,0.15))" }}
                       >
                         {e}
@@ -342,10 +342,10 @@ export default function About() {
             </div>
 
             {/* Card 4: Development Philosophy */}
-            <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-              <div className="relative rounded-[15px] p-6 backdrop-blur-xl overflow-hidden" style={{ backgroundColor: "#101827" }}>
+            <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+              <div className="relative rounded-[15px] p-6 backdrop-blur-xl overflow-hidden" style={{ backgroundColor: "var(--card-bg)" }}>
                 <Quote size={38} className="text-[#A855F7]/20 absolute top-4 left-4" />
-                <p className="relative text-white/80 italic text-[14px] sm:text-[15px] leading-relaxed pl-8">
+                <p className="relative text-foreground/80 italic text-[14px] sm:text-[15px] leading-relaxed pl-8">
                   &ldquo;I believe software should be clean, scalable,
                   maintainable, and built to solve real business
                   problems&mdash;not just look good.&rdquo;
@@ -354,9 +354,9 @@ export default function About() {
             </div>
 
             {/* Card 5: Career Objective timeline */}
-            <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-              <div className="rounded-[15px] p-6 backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
-                <h3 className="text-sm font-bold text-white mb-6">Career Objective</h3>
+            <div className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+              <div className="rounded-[15px] p-6 backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
+                <h3 className="text-sm font-bold text-foreground mb-6">Career Objective</h3>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-2">
                   {timeline.map((t, i) => {
                     const Icon = t.icon;
@@ -366,18 +366,18 @@ export default function About() {
                           <div
                             className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center border"
                             style={{
-                              backgroundColor: t.active ? "rgba(124,58,237,0.15)" : "rgba(255,255,255,0.03)",
-                              borderColor: t.active ? "#7C3AED" : "rgba(255,255,255,0.1)",
+                              backgroundColor: t.active ? "rgba(124,58,237,0.15)" : "rgba(var(--fg-rgb),0.03)",
+                              borderColor: t.active ? "#7C3AED" : "rgba(var(--fg-rgb),0.1)",
                             }}
                           >
-                            <Icon size={16} style={{ color: t.active ? "#A855F7" : "rgba(255,255,255,0.4)" }} />
+                            <Icon size={16} style={{ color: t.active ? "#A855F7" : "rgba(var(--fg-rgb),0.4)" }} />
                           </div>
-                          <span className={`text-[11.5px] font-medium text-center sm:text-center ${t.active ? "text-white" : "text-white/40"}`}>
+                          <span className={`text-[11.5px] font-medium text-center sm:text-center ${t.active ? "text-foreground" : "text-foreground/40"}`}>
                             {t.label}
                           </span>
                         </div>
                         {i < timeline.length - 1 && (
-                          <div className="hidden sm:block flex-1 h-px bg-white/10 mt-[-24px]" aria-hidden />
+                          <div className="hidden sm:block flex-1 h-px bg-foreground/10 mt-[-24px]" aria-hidden />
                         )}
                       </div>
                     );
@@ -397,15 +397,15 @@ export default function About() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mt-14 sm:mt-16"
         >
           {stats.map((s) => (
-            <div key={s.label} className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}>
-              <div className="rounded-[15px] p-5 sm:p-6 text-center backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
+            <div key={s.label} className="rounded-2xl p-[1px]" style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}>
+              <div className="rounded-[15px] p-5 sm:p-6 text-center backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
                 <p
                   className="text-2xl sm:text-3xl font-bold font-mono bg-clip-text text-transparent mb-1"
                   style={{ backgroundImage: "linear-gradient(90deg, #A855F7, #3B82F6)" }}
                 >
                   {s.display ?? <Counter value={s.value} suffix={s.suffix} />}
                 </p>
-                <p className="text-white/45 text-[11px] sm:text-xs">{s.label}</p>
+                <p className="text-foreground/45 text-[11px] sm:text-xs">{s.label}</p>
               </div>
             </div>
           ))}

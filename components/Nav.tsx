@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { profile } from "@/lib/data";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
 
 const links = [
   { href: "#about", label: "about" },
@@ -14,6 +15,7 @@ const links = [
 
 export default function Nav() {
   const [open, setOpen] = useState(false);
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 border-b border-border-dim bg-background/80 backdrop-blur-md">
@@ -42,16 +44,27 @@ export default function Nav() {
           ))}
         </ul>
 
-        {/* mobile menu button */}
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          className="sm:hidden p-2 -mr-2 text-muted hover:text-accent-cyan transition-colors"
-        >
-          {open ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            className="p-2 rounded-lg text-muted hover:text-accent-cyan hover:bg-surface transition-colors"
+          >
+            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+          </button>
+
+          {/* mobile menu button */}
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            className="sm:hidden p-2 -mr-2 text-muted hover:text-accent-cyan transition-colors"
+          >
+            {open ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </nav>
 
       {/* mobile dropdown */}

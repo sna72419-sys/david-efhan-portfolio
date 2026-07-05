@@ -115,22 +115,22 @@ export default function ResumeViewerModal({
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-3xl h-[88vh] rounded-2xl overflow-hidden border border-white/10 flex flex-col"
-            style={{ backgroundColor: "#0B0E14" }}
+            className="relative w-full max-w-3xl h-[88vh] rounded-2xl overflow-hidden border border-foreground/10 flex flex-col"
+            style={{ backgroundColor: "var(--page-bg)" }}
           >
             {/* top bar */}
-            <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-white/10 shrink-0">
+            <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 border-b border-foreground/10 shrink-0">
               <div className="flex items-center gap-2 min-w-0">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#F87171]/70 shrink-0" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#FBBF24]/70 shrink-0" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#34D399]/70 shrink-0" />
-                <span className="ml-2 text-xs font-mono text-white/40 truncate">resume.pdf</span>
+                <span className="ml-2 text-xs font-mono text-foreground/40 truncate">resume.pdf</span>
               </div>
               <div className="flex items-center gap-2 shrink-0">
                 <a
                   href="/resume.pdf"
                   download
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-white/80 border border-white/10 hover:border-white/25 hover:text-white transition-colors"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-medium text-foreground/80 border border-foreground/10 hover:border-foreground/25 hover:text-foreground transition-colors"
                 >
                   <Download size={13} /> Download
                 </a>
@@ -138,7 +138,7 @@ export default function ResumeViewerModal({
                   type="button"
                   onClick={onClose}
                   aria-label="Close resume viewer"
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.06] transition-colors"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center text-foreground/50 hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
                 >
                   <X size={16} />
                 </button>
@@ -146,20 +146,20 @@ export default function ResumeViewerModal({
             </div>
 
             {/* pdf viewer */}
-            <div className="relative flex-1 overflow-y-auto p-3 sm:p-5" style={{ backgroundColor: "#1a1d24" }}>
+            <div className="relative flex-1 overflow-y-auto p-3 sm:p-5" style={{ backgroundColor: "var(--surface-2)" }}>
               {loading && !error && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/40">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-foreground/40">
                   <Loader2 size={24} className="animate-spin" />
                   <span className="text-xs font-mono">Loading resume...</span>
                 </div>
               )}
               {error && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-white/50 px-6 text-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-foreground/50 px-6 text-center">
                   <span className="text-sm">Couldn&apos;t load the preview.</span>
                   <a
                     href="/resume.pdf"
                     download
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-medium text-white border border-white/15 hover:border-white/30 transition-colors"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-[12px] font-medium text-foreground border border-foreground/15 hover:border-foreground/30 transition-colors"
                   >
                     <Download size={13} /> Download instead
                   </a>

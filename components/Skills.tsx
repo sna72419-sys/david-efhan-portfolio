@@ -139,9 +139,9 @@ function CardShell({ children, className = "" }: { children: React.ReactNode; cl
   return (
     <div
       className={`rounded-[24px] p-[1px] ${className}`}
-      style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}
+      style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}
     >
-      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
+      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
         {children}
       </div>
     </div>
@@ -152,8 +152,8 @@ export default function Skills() {
   return (
     <section
       id="skills"
-      className="relative py-16 sm:py-28 border-t border-white/[0.08] overflow-hidden"
-      style={{ backgroundColor: "#080B14" }}
+      className="relative py-16 sm:py-28 border-t border-foreground/[0.08] overflow-hidden"
+      style={{ backgroundColor: "var(--page-bg)" }}
     >
       {/* ambient glow */}
       <div className="absolute top-1/4 -left-32 w-[380px] h-[380px] rounded-full blur-[130px] opacity-20 pointer-events-none" style={{ background: "#7C3AED" }} aria-hidden />
@@ -161,7 +161,7 @@ export default function Skills() {
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(var(--fg-rgb),0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--fg-rgb),0.6) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         aria-hidden
@@ -190,11 +190,11 @@ export default function Skills() {
         {/* top status bar */}
         <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-10 sm:mb-14">
           <CardShell>
-            <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x-0 lg:divide-x divide-white/[0.08]">
+            <div className="grid grid-cols-2 lg:grid-cols-4 divide-y lg:divide-y-0 divide-x-0 lg:divide-x divide-foreground/[0.08]">
               {statusItems.map((item) => (
                 <div key={item.label} className="flex flex-col gap-1.5 px-5 py-4">
-                  <span className="text-[10px] uppercase tracking-widest text-white/35 font-mono">{item.label}</span>
-                  <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                  <span className="text-[10px] uppercase tracking-widest text-foreground/35 font-mono">{item.label}</span>
+                  <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
                     <span className="relative flex h-2 w-2">
                       {item.pulse && (
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-60" style={{ backgroundColor: item.dot }} />
@@ -216,7 +216,7 @@ export default function Skills() {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
               <CardShell className="h-full">
                 <div className="p-5 sm:p-6 h-full flex flex-col">
-                  <h3 className="text-sm font-bold text-white mb-5">Languages</h3>
+                  <h3 className="text-sm font-bold text-foreground mb-5">Languages</h3>
                   <div className="space-y-4 flex-1">
                     {languages.map((lang, i) => {
                       const Icon = lang.icon;
@@ -224,10 +224,10 @@ export default function Skills() {
                         <div key={lang.name} className="group">
                           <div className="flex items-center gap-2 mb-1.5">
                             <Icon size={13} style={{ color: lang.color }} className="shrink-0" />
-                            <span className="text-[12.5px] text-white/80 font-medium flex-1">{lang.name}</span>
-                            <span className="text-[10.5px] font-mono text-white/40">{lang.level}%</span>
+                            <span className="text-[12.5px] text-foreground/80 font-medium flex-1">{lang.name}</span>
+                            <span className="text-[10.5px] font-mono text-foreground/40">{lang.level}%</span>
                           </div>
-                          <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                          <div className="h-1.5 rounded-full bg-foreground/[0.06] overflow-hidden">
                             <motion.div
                               initial={{ width: 0 }}
                               whileInView={{ width: `${lang.level}%` }}
@@ -249,24 +249,24 @@ export default function Skills() {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.1 }}>
               <CardShell className="h-full">
                 <div className="p-5 sm:p-6 h-full flex flex-col">
-                  <h3 className="text-sm font-bold text-white mb-5">Frameworks &amp; Platforms</h3>
+                  <h3 className="text-sm font-bold text-foreground mb-5">Frameworks &amp; Platforms</h3>
                   <div className="space-y-2.5 flex-1">
                     {frameworks.map((fw) => {
                       const Icon = fw.icon;
                       return (
                         <div
                           key={fw.name}
-                          className="group flex items-center gap-3 rounded-xl px-2.5 py-2 -mx-2.5 border border-transparent hover:border-white/10 hover:bg-white/[0.03] transition-all"
+                          className="group flex items-center gap-3 rounded-xl px-2.5 py-2 -mx-2.5 border border-transparent hover:border-foreground/10 hover:bg-foreground/[0.03] transition-all"
                         >
                           <span className="shrink-0 w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: `${fw.color}1A` }}>
                             <Icon size={15} style={{ color: fw.color }} />
                           </span>
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-1.5">
-                              <span className="text-[12.5px] font-medium text-white/85 truncate">{fw.name}</span>
-                              <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-mono text-white/40 border border-white/10">{fw.version}</span>
+                              <span className="text-[12.5px] font-medium text-foreground/85 truncate">{fw.name}</span>
+                              <span className="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-mono text-foreground/40 border border-foreground/10">{fw.version}</span>
                             </div>
-                            <p className="text-[10.5px] text-white/40 truncate">{fw.desc}</p>
+                            <p className="text-[10.5px] text-foreground/40 truncate">{fw.desc}</p>
                           </div>
                         </div>
                       );
@@ -280,14 +280,14 @@ export default function Skills() {
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: 0.2 }}>
               <CardShell className="h-full">
                 <div className="p-5 sm:p-6 h-full flex flex-col">
-                  <h3 className="text-sm font-bold text-white mb-5">Developer Toolkit</h3>
+                  <h3 className="text-sm font-bold text-foreground mb-5">Developer Toolkit</h3>
                   <div className="flex flex-wrap gap-2 content-start flex-1">
                     {toolkit.map((tool) => {
                       const Icon = tool.icon;
                       return (
                         <span
                           key={tool.name}
-                          className="group inline-flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full text-[11px] font-medium text-white/75 border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm transition-all hover:border-[#22C55E]/40 hover:text-white"
+                          className="group inline-flex items-center gap-1.5 pl-2.5 pr-3 py-1.5 rounded-full text-[11px] font-medium text-foreground/75 border border-foreground/[0.08] bg-foreground/[0.03] backdrop-blur-sm transition-all hover:border-[#22C55E]/40 hover:text-foreground"
                         >
                           <Icon size={12} className="text-[#3B82F6] shrink-0 group-hover:hidden" />
                           <Check size={12} className="text-[#22C55E] shrink-0 hidden group-hover:block" />
@@ -305,11 +305,11 @@ export default function Skills() {
           <motion.div initial={{ opacity: 0, scale: 0.94 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <CardShell className="h-full">
               <div className="p-5 sm:p-6 h-full flex flex-col items-center justify-center">
-                <h3 className="text-sm font-bold text-white mb-4 self-start">Developer Radar</h3>
+                <h3 className="text-sm font-bold text-foreground mb-4 self-start">Developer Radar</h3>
                 <div className="relative w-[230px] h-[230px]">
                   {/* rotating outer rings */}
-                  <div className="absolute inset-0 rounded-full border border-white/[0.08]" aria-hidden />
-                  <div className="absolute inset-[14%] rounded-full border border-white/[0.06] spin-slow" aria-hidden />
+                  <div className="absolute inset-0 rounded-full border border-foreground/[0.08]" aria-hidden />
+                  <div className="absolute inset-[14%] rounded-full border border-foreground/[0.06] spin-slow" aria-hidden />
                   <div className="absolute inset-[28%] rounded-full blur-xl opacity-40" style={{ backgroundImage: "linear-gradient(135deg, #7C3AED, #3B82F6)" }} aria-hidden />
 
                   {/* connector lines */}
@@ -345,7 +345,7 @@ export default function Skills() {
                   {/* center label */}
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div
-                      className="w-16 h-16 rounded-full flex items-center justify-center text-center text-[9px] font-bold font-mono text-white border border-white/20 backdrop-blur-md shadow-lg"
+                      className="w-16 h-16 rounded-full flex items-center justify-center text-center text-[9px] font-bold font-mono text-white border border-foreground/20 backdrop-blur-md shadow-lg"
                       style={{ backgroundImage: "linear-gradient(135deg, #7C3AED, #3B82F6)" }}
                     >
                       FULL
@@ -369,7 +369,7 @@ export default function Skills() {
                         className="absolute -translate-x-1/2 -translate-y-1/2 float-badge"
                         style={{ left: `${left}%`, top: `${top}%`, animationDelay: `${i * 0.3}s` }}
                       >
-                        <div className="px-2 py-1 rounded-full text-[9px] font-mono font-medium text-white/85 border border-white/15 whitespace-nowrap backdrop-blur-md shadow" style={{ backgroundColor: "rgba(16,24,39,0.9)" }}>
+                        <div className="px-2 py-1 rounded-full text-[9px] font-mono font-medium text-foreground/85 border border-foreground/15 whitespace-nowrap backdrop-blur-md shadow" style={{ backgroundColor: "rgba(16,24,39,0.9)" }}>
                           {node}
                         </div>
                       </motion.div>
@@ -385,7 +385,7 @@ export default function Skills() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 sm:mb-14">
           <CardShell>
             <div className="p-6 sm:p-8">
-              <h3 className="text-sm font-bold text-white mb-7">Development Workflow</h3>
+              <h3 className="text-sm font-bold text-foreground mb-7">Development Workflow</h3>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6 sm:gap-2">
                 {workflow.map((step, i) => {
                   const Icon = step.icon;
@@ -399,7 +399,7 @@ export default function Skills() {
                           <div className="absolute inset-0 rounded-2xl blur-md opacity-40" style={{ backgroundColor: "#7C3AED" }} aria-hidden />
                           <Icon size={18} className="relative text-[#A855F7]" />
                         </div>
-                        <span className="text-[12px] font-medium text-white/80 text-center sm:text-center whitespace-nowrap">
+                        <span className="text-[12px] font-medium text-foreground/80 text-center sm:text-center whitespace-nowrap">
                           {step.label}
                         </span>
                       </div>
@@ -426,7 +426,7 @@ export default function Skills() {
                 <p className="text-2xl sm:text-3xl font-bold font-mono bg-clip-text text-transparent mb-1" style={{ backgroundImage: "linear-gradient(90deg, #A855F7, #3B82F6)" }}>
                   <Counter value={s.value} suffix={s.suffix} />
                 </p>
-                <p className="text-white/45 text-[11px] sm:text-xs">{s.label}</p>
+                <p className="text-foreground/45 text-[11px] sm:text-xs">{s.label}</p>
               </div>
             </CardShell>
           ))}

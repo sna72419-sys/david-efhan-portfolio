@@ -91,9 +91,9 @@ function CardShell({ children, className = "" }: { children: React.ReactNode; cl
   return (
     <div
       className={`rounded-[24px] p-[1px] ${className}`}
-      style={{ backgroundImage: "linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02))" }}
+      style={{ backgroundImage: "linear-gradient(160deg, rgba(var(--fg-rgb),0.14), rgba(var(--fg-rgb),0.02))" }}
     >
-      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "#101827" }}>
+      <div className="rounded-[23px] h-full backdrop-blur-xl" style={{ backgroundColor: "var(--card-bg)" }}>
         {children}
       </div>
     </div>
@@ -104,8 +104,8 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="relative py-16 sm:py-28 border-t border-white/[0.08] overflow-hidden"
-      style={{ backgroundColor: "#080B14" }}
+      className="relative py-16 sm:py-28 border-t border-foreground/[0.08] overflow-hidden"
+      style={{ backgroundColor: "var(--page-bg)" }}
     >
       {/* ambient glow */}
       <div className="absolute top-0 right-1/4 w-[360px] h-[360px] rounded-full blur-[130px] opacity-20 pointer-events-none" style={{ background: "#7C3AED" }} aria-hidden />
@@ -113,7 +113,7 @@ export default function Experience() {
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
         style={{
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(var(--fg-rgb),0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(var(--fg-rgb),0.6) 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
         aria-hidden
@@ -165,20 +165,20 @@ export default function Experience() {
                     {/* commit node */}
                     <div
                       className="absolute -left-10 sm:-left-12 top-1 w-8 h-8 rounded-full flex items-center justify-center border-2"
-                      style={{ backgroundColor: "#101827", borderColor: c.typeColor, boxShadow: `0 0 16px ${c.typeColor}66` }}
+                      style={{ backgroundColor: "var(--card-bg)", borderColor: c.typeColor, boxShadow: `0 0 16px ${c.typeColor}66` }}
                     >
                       <GitCommit size={14} style={{ color: c.typeColor }} />
                     </div>
 
-                    <div className="rounded-2xl p-[1px]" style={{ backgroundImage: `linear-gradient(160deg, ${c.typeColor}55, rgba(255,255,255,0.03))` }}>
-                      <div className="rounded-[15px] p-5 sm:p-6 backdrop-blur-xl hover:translate-y-[-2px] transition-transform duration-300" style={{ backgroundColor: "#101827" }}>
+                    <div className="rounded-2xl p-[1px]" style={{ backgroundImage: `linear-gradient(160deg, ${c.typeColor}55, rgba(var(--fg-rgb),0.03))` }}>
+                      <div className="rounded-[15px] p-5 sm:p-6 backdrop-blur-xl hover:translate-y-[-2px] transition-transform duration-300" style={{ backgroundColor: "var(--card-bg)" }}>
                         {/* meta row */}
                         <div className="flex flex-wrap items-center gap-2.5 mb-3 text-[11px] font-mono">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-white/70 border border-white/10 bg-white/[0.03]">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-foreground/70 border border-foreground/10 bg-foreground/[0.03]">
                             <GitCommit size={11} />
                             {c.hash}
                           </span>
-                          <span className="text-white/35">{c.date}</span>
+                          <span className="text-foreground/35">{c.date}</span>
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md" style={{ backgroundColor: `${c.typeColor}1A`, color: c.typeColor }}>
                             <TypeIcon size={11} />
                             {c.type}
@@ -192,12 +192,12 @@ export default function Experience() {
                           </span>
                         </div>
 
-                        <h3 className="text-base sm:text-lg font-bold text-white mb-1">{c.title}</h3>
-                        <p className="text-[13px] text-white/50 mb-4 flex items-center gap-1.5">
+                        <h3 className="text-base sm:text-lg font-bold text-foreground mb-1">{c.title}</h3>
+                        <p className="text-[13px] text-foreground/50 mb-4 flex items-center gap-1.5">
                           {c.type === "Education" ? <School size={13} /> : null}
                           {c.org}
                           {c.location && (
-                            <span className="inline-flex items-center gap-1 text-white/35">
+                            <span className="inline-flex items-center gap-1 text-foreground/35">
                               <MapPin size={11} /> {c.location}
                             </span>
                           )}
@@ -205,9 +205,9 @@ export default function Experience() {
 
                         {/* description card for internship */}
                         {c.tasks && c.tasks.length > 0 && (
-                          <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4 space-y-2.5">
+                          <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4 space-y-2.5">
                             {c.tasks.map((task, i) => (
-                              <div key={i} className="flex items-start gap-2.5 text-[12.5px] text-white/70">
+                              <div key={i} className="flex items-start gap-2.5 text-[12.5px] text-foreground/70">
                                 <CheckCircle2 size={14} className="text-[#22C55E] shrink-0 mt-0.5" />
                                 <span>{task}</span>
                               </div>
@@ -217,13 +217,13 @@ export default function Experience() {
 
                         {/* focus card for education */}
                         {c.focus && (
-                          <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
-                            <p className="text-[10px] uppercase tracking-widest text-white/35 font-mono mb-2.5">
+                          <div className="rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] p-4">
+                            <p className="text-[10px] uppercase tracking-widest text-foreground/35 font-mono mb-2.5">
                               Relevant Focus
                             </p>
                             <div className="grid grid-cols-2 gap-2">
                               {c.focus.map((f) => (
-                                <span key={f} className="flex items-center gap-2 text-[12px] text-white/70">
+                                <span key={f} className="flex items-center gap-2 text-[12px] text-foreground/70">
                                   <span className="w-1 h-1 rounded-full shrink-0" style={{ backgroundColor: c.typeColor }} />
                                   {f}
                                 </span>
@@ -243,15 +243,15 @@ export default function Experience() {
           <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.55 }} className="lg:sticky lg:top-24">
             <CardShell>
               <div className="p-5 sm:p-6">
-                <h3 className="text-sm font-bold text-white mb-5 flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground mb-5 flex items-center gap-2">
                   <Layers size={15} className="text-[#A855F7]" />
                   Overview
                 </h3>
                 <div className="space-y-4">
                   {statsPanel.map((s) => (
-                    <div key={s.label} className="flex items-center justify-between pb-4 border-b border-white/[0.06] last:border-0 last:pb-0">
-                      <span className="text-[12.5px] text-white/45">{s.label}</span>
-                      <span className="text-sm font-bold font-mono text-white">
+                    <div key={s.label} className="flex items-center justify-between pb-4 border-b border-foreground/[0.06] last:border-0 last:pb-0">
+                      <span className="text-[12.5px] text-foreground/45">{s.label}</span>
+                      <span className="text-sm font-bold font-mono text-foreground">
                         {typeof s.value === "number" ? <Counter value={s.value} suffix={s.suffix ?? ""} /> : s.value}
                       </span>
                     </div>
@@ -266,7 +266,7 @@ export default function Experience() {
         <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
           <CardShell>
             <div className="p-6 sm:p-8">
-              <h3 className="text-sm font-bold text-white mb-7">Developer Journey</h3>
+              <h3 className="text-sm font-bold text-foreground mb-7">Developer Journey</h3>
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-6 sm:gap-2">
                 {journey.map((step, i) => {
                   const Icon = step.icon;
@@ -277,16 +277,16 @@ export default function Experience() {
                         <div
                           className="shrink-0 w-11 h-11 rounded-2xl flex items-center justify-center border relative"
                           style={{
-                            backgroundColor: isCurrent ? "rgba(124,58,237,0.18)" : "rgba(255,255,255,0.03)",
-                            borderColor: isCurrent ? "rgba(168,85,247,0.5)" : "rgba(255,255,255,0.1)",
+                            backgroundColor: isCurrent ? "rgba(124,58,237,0.18)" : "rgba(var(--fg-rgb),0.03)",
+                            borderColor: isCurrent ? "rgba(168,85,247,0.5)" : "rgba(var(--fg-rgb),0.1)",
                           }}
                         >
                           {isCurrent && (
                             <div className="absolute inset-0 rounded-2xl blur-md opacity-50" style={{ backgroundColor: "#7C3AED" }} aria-hidden />
                           )}
-                          <Icon size={18} className="relative" style={{ color: isCurrent ? "#A855F7" : "rgba(255,255,255,0.4)" }} />
+                          <Icon size={18} className="relative" style={{ color: isCurrent ? "#A855F7" : "rgba(var(--fg-rgb),0.4)" }} />
                         </div>
-                        <span className={`text-[12px] font-medium text-center whitespace-nowrap ${isCurrent ? "text-white" : "text-white/40"}`}>
+                        <span className={`text-[12px] font-medium text-center whitespace-nowrap ${isCurrent ? "text-foreground" : "text-foreground/40"}`}>
                           {step.label}
                         </span>
                       </div>
