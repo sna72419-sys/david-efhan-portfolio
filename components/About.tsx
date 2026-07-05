@@ -52,7 +52,7 @@ const timeline = [
 
 const stats = [
   { value: 3, suffix: "+", label: "Production Systems" },
-  { value: 10, suffix: "+", label: "Technologies" },
+  { value: 20, suffix: "+", label: "Technologies" },
   { value: 100, suffix: "%", label: "Passion for Learning" },
   { value: 0, suffix: "", label: "Always Building Projects", display: "Always" },
 ];
@@ -120,12 +120,7 @@ export default function About() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
           className="mb-14 sm:mb-20"
-        >
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#A855F7] mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#A855F7] shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
-            // about
-          </span>
-          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
+        >          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
             <span
               className="bg-clip-text text-transparent"
               style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}

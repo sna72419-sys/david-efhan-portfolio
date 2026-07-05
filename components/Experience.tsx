@@ -47,8 +47,8 @@ const commits = [
 const statsPanel = [
   { label: "Experience", value: "Internship" },
   { label: "Education", value: "Graduate" },
-  { label: "Projects", value: 5, suffix: "+" },
-  { label: "Technologies", value: 15, suffix: "+" },
+  { label: "Projects", value: 3, suffix: "+" },
+  { label: "Technologies", value: 20, suffix: "+" },
   { label: "Production Systems", value: 3, suffix: "+" },
 ];
 
@@ -121,12 +121,7 @@ export default function Experience() {
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6">
         {/* header */}
-        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-14 sm:mb-20">
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#A855F7] mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#A855F7] shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
-            // history
-          </span>
-          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
+        <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mb-14 sm:mb-20">          <h2 className="relative inline-block text-3xl sm:text-5xl font-bold font-mono tracking-tight">
             <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}>
               commit_log()
             </span>

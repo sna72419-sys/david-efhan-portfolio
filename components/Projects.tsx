@@ -77,12 +77,7 @@ export default function Projects() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-          >
-            <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-[#A855F7] mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#A855F7] shadow-[0_0_8px_rgba(168,85,247,0.8)]" />
-              // projects
-            </span>
-            <h2 className="relative inline-block text-3xl sm:text-5xl font-bold tracking-tight">
+          >            <h2 className="relative inline-block text-3xl sm:text-5xl font-bold tracking-tight">
               <span
                 className="bg-clip-text text-transparent"
                 style={{ backgroundImage: "linear-gradient(90deg, #ffffff, #A855F7)" }}
