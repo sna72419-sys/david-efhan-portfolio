@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { profile } from "@/lib/data";
+import RobotReveal from "@/components/RobotReveal";
 import { Download, ArrowRight, Mail, Phone, Atom, Zap, Eye } from "lucide-react";
 import ResumeViewerModal from "@/components/ResumeViewerModal";
 
@@ -148,16 +148,16 @@ export default function Hero() {
               <span className="absolute top-1/4 -right-1 w-1.5 h-1.5 rounded-full bg-hero-purple" />
             </div>
 
-            {/* photo */}
+            {/* photo with robot spotlight reveal */}
             <div className="absolute inset-0 flex items-end justify-center">
               <div className="relative w-[85%] aspect-[5/6]">
-                <Image
-                  src="/profile-float.png"
+                <RobotReveal
+                  normalImage="/profile-float.png"
+                  robotImage="/profile-robot.png"
+                  width={340}
+                  height={408}
                   alt={profile.name}
-                  fill
-                  sizes="360px"
-                  className="object-contain object-bottom drop-shadow-2xl"
-                  priority
+                  className="absolute inset-0 w-full h-full"
                 />
               </div>
             </div>
