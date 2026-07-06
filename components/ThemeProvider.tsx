@@ -1,26 +1,20 @@
 "use client";
 
-import { createContext, useContext, useEffect, useRef, useState } from "react";
-import FireTransition, { FireMode } from "@/components/FireTransition";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light";
 
 const ThemeContext = createContext<{
   theme: Theme;
   toggleTheme: () => void;
-  isTransitioning: boolean;
 }>({
   theme: "dark",
   toggleTheme: () => {},
-  isTransitioning: false,
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
-  const [fireActive, setFireActive] = useState(false);
-  const [fireMode, setFireMode] = useState<FireMode>("toDark");
-  const pendingTheme = useRef<Theme | null>(null);
 
   useEffect(() => {
     const stored = window.localStorage.getItem("theme") as Theme | null;
@@ -40,34 +34,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, [theme, mounted]);
 
   const toggleTheme = () => {
-    if (fireActive) return; // prevent multiple clicks / overlapping transitions
-    const to: Theme = theme === "dark" ? "light" : "dark";
-    pendingTheme.current = to;
-    setFireMode(to === "dark" ? "toDark" : "toLight");
-    setFireActive(true);
-  };
-
-  // Apply the actual theme change only once the flames fully cover the screen.
-  const handleMidpoint = () => {
-    if (pendingTheme.current) {
-      setTheme(pendingTheme.current);
-      pendingTheme.current = null;
-    }
-  };
-
-  const handleComplete = () => {
-    setFireActive(false);
+    setTheme((current) => (current === "dark" ? "light" : "dark"));
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, isTransitioning: fireActive }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
-      <FireTransition
-        active={fireActive}
-        mode={fireMode}
-        onMidpoint={handleMidpoint}
-        onComplete={handleComplete}
-      />
     </ThemeContext.Provider>
   );
 }
